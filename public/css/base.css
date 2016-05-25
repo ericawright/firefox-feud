@@ -72,7 +72,7 @@ section.strikes div {
 }
 .face.back {
   display: block;
-  transform: rotateY(180deg);
+  transform: rotateY(180deg) rotateZ(180deg);
   box-sizing: border-box;
   padding: 10px;
   color: white;
