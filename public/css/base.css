@@ -49,11 +49,12 @@ section.strikes div {
 }
 
 .flip-container {
+  width: 350px;
   position: relative;
-  margin: 20px 0;
-  width: 100%px;
+  margin: 20px 10px;
   height: 60px;
   z-index: 1;
+  float: left;
 }
 .flipper {
   width: 100%;
@@ -78,14 +79,4 @@ section.strikes div {
   color: white;
   text-align: center;
   background-color: #aaa;
-}
-
-.pull-left {
-  float:left;
-  width: 350px;
-}
-
-.pull-right {
-  float: right;
-  width: 350px;
 }

@@ -74,9 +74,9 @@ var AnswerSection = React.createClass({
   },
   render: function() {
     return(
-      <div>
+      <section className="answers">
         {this.calculateContainers()}
-      </div>
+      </section>
     );
   }
 
