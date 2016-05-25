@@ -1,3 +1,14 @@
+var StartPage = React.createClass({
+  render: function() {
+    var play = this.props.beginGame;
+    var content = play? <Game/ > : <div><p>Welcome</p><button onClick={this.props.startPlay}> Play!</button></div>;
+    return (
+      <div>
+        {content}
+      </div>
+    )
+  }
+});
 
 var Game = React.createClass({
   loadQuestionsFromJson: function() {
@@ -99,6 +110,7 @@ var Provider = ReactRedux.Provider;
 var connect = ReactRedux.connect;
 
 var initialState = {
+  beginGame: false,
   keys: [],
   data: [],
   url: "/api/feud-data",
@@ -114,6 +126,9 @@ var reducer = function(state, action) {
     case 'set_questions':
       newState = Object.assign({}, state, {data: action.data, keys: action.keys});
       break;
+    case 'start_play':
+      newState = Object.assign({}, state, {beginGame: true});
+      break;
   }
   return newState;
 }
@@ -123,6 +138,7 @@ var store = createStore(reducer, initialState);
 //Pass initial state to game as props
 var GameState = function(state) {
   return{
+    beginGame: state.beginGame,
     keys: state.keys,
     url: state.url,
     data: state.data
@@ -137,10 +153,18 @@ var GameDispatch = function(dispatch) {
         data: data,
         keys: keys
       })
+    },
+    startPlay: function() {
+      dispatch({
+        type: 'start_play'
+      })
     }
   }
 }
-
+StartPage = connect(
+  GameState,
+  GameDispatch
+)(StartPage)
 Game = connect(
   GameState,
   GameDispatch
@@ -156,7 +180,7 @@ AnswerSection = connect(
 
 ReactDOM.render(
   <Provider store={store}>
-      <Game/>
+      <StartPage/>
   </Provider>,
   document.getElementById('content')
 );
