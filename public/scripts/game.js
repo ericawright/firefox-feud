@@ -38,8 +38,11 @@ var AnswerContainer = React.createClass({
     return(
       <div className="flip-container">
         <div className="flipper">
-          <div className="front face">1</div>
-          <div className="back face"><span className="answer">{this.props.answer}</span> <span className="points">30</span></div>
+          <div className="front face">{this.props.index}</div>
+          <div className="back face">
+            <span className="answer">{this.props.answer}</span>
+            <span className="points">{this.props.count}</span>
+          </div>
         </div>
       </div>
     );
@@ -48,15 +51,23 @@ var AnswerContainer = React.createClass({
 
 var AnswerSection = React.createClass({
   componentDidMount: function() {
-    console.log("Answers", this.props.data)
   },
   calculateContainers: function() {
-    var containers = []
+    var containers = [];
+    var sortable = [];
+    var count_total = {};
     if (this.props.data.nameSomethingThatFirefoxDoes) {
-      this.props.data.nameSomethingThatFirefoxDoes.forEach(function(answer, i){
-
-         containers.push(<AnswerContainer key={i} answer={answer}/>);
-
+      this.props.data.nameSomethingThatFirefoxDoes.forEach(function(answer){
+         count_total[answer] = (count_total[answer] || 0) + 1;
+      });
+      for (var key in count_total) {
+        sortable.push([key, count_total[key]])
+      }
+      sortable.sort(function(a, b) {return  b[1] - a[1]})
+      $.each(sortable, function(i, value) {
+        var answer = value[0];
+        var count = value[1];
+        containers.push(<AnswerContainer key={i} index={i+1} answer={answer} count={count}/>);
       });
     }
     return containers;
