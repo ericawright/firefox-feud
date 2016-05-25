@@ -6,7 +6,7 @@ var Game = React.createClass({
       dataType: 'json',
       cache: false,
       success: function(data) {
-        this.props.setQuestions(data);
+        this.shuffleQuestions(data);
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
@@ -16,11 +16,22 @@ var Game = React.createClass({
   componentDidMount: function() {
     this.loadQuestionsFromJson();
   },
+  shuffleQuestions: function(data) {
+    var keys = Object.keys(data);
+    var shuffled = keys.slice(0), i = keys.length, temp, index;
+    while (i--) {
+        index = Math.floor((i + 1) * Math.random());
+        temp = shuffled[index];
+        shuffled[index] = shuffled[i];
+        shuffled[i] = temp;
+    }
+    this.props.setQuestions(data, shuffled);
+  },
   render: function() {
     return(
       <div>
           {
-            this.props.data.nameSomethingThatFirefoxDoes && <header><h1>{this.props.data.nameSomethingThatFirefoxDoes[0]}</h1></header>
+            this.props.data.nameSomethingThatFirefoxDoes && <header><h1>{this.props.keys[0]}</h1></header>
           }
           <AnswerSection />
           <section className="strikes">
@@ -56,8 +67,8 @@ var AnswerSection = React.createClass({
     var containers = [];
     var sortable = [];
     var count_total = {};
-    if (this.props.data.nameSomethingThatFirefoxDoes) {
-      this.props.data.nameSomethingThatFirefoxDoes.forEach(function(answer){
+    if (this.props.keys.length) {
+      this.props.data[this.props.keys[0]].forEach(function(answer){
          count_total[answer] = (count_total[answer] || 0) + 1;
       });
       for (var key in count_total) {
@@ -82,14 +93,13 @@ var AnswerSection = React.createClass({
 
 });
 
-
-
 //createStore, provider, and set initial State
 var createStore = Redux.createStore;
 var Provider = ReactRedux.Provider;
 var connect = ReactRedux.connect;
 
 var initialState = {
+  keys: [],
   data: [],
   url: "/api/feud-data",
 }
@@ -102,7 +112,7 @@ var reducer = function(state, action) {
 
   switch(action.type) {
     case 'set_questions':
-      newState = Object.assign({}, state, {data: action.data})
+      newState = Object.assign({}, state, {data: action.data, keys: action.keys});
       break;
   }
   return newState;
@@ -113,6 +123,7 @@ var store = createStore(reducer, initialState);
 //Pass initial state to game as props
 var GameState = function(state) {
   return{
+    keys: state.keys,
     url: state.url,
     data: state.data
   }
@@ -120,10 +131,11 @@ var GameState = function(state) {
 
 var GameDispatch = function(dispatch) {
   return {
-    setQuestions: function(data) {
+    setQuestions: function(data, keys) {
       dispatch({
         type: 'set_questions',
-        data: data
+        data: data,
+        keys: keys
       })
     }
   }
