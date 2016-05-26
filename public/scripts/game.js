@@ -61,9 +61,12 @@ var Game = React.createClass({
 });
 
 var AnswerContainer = React.createClass({
-  emitRevealAnswer: function(e){
-     var react_id = e.currentTarget.dataset.reactid;
-     socket.emit('reveal answer', react_id);
+  emitRevealAnswer: function(e) {
+    if (this.props.judge) {
+      e.currentTarget.classList.add('clicked');
+      var react_id = e.currentTarget.dataset.reactid;
+      socket.emit('reveal answer', react_id);
+   }
   },
   render: function() {
     var reveal = this.props.judge? ' reveal': ''

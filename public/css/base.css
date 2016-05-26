@@ -56,21 +56,29 @@ section.strikes div {
   z-index: 1;
   float: left;
 }
+
+.flip-container.reveal.clicked .face.back {
+  background-color: #578bd2;
+}
+
 .flipper {
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
   transition: all 1.0s linear;
 }
+
 .flip-container.reveal .flipper {
   transform: rotateX(180deg);
 }
+
 .face {
   position: absolute;
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
 }
+
 .face.back {
   display: block;
   transform: rotateY(180deg) rotateZ(180deg);
