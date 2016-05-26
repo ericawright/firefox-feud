@@ -49,9 +49,15 @@ io.on('connection', function(socket){
     socket.broadcast.emit('update game', state);
   });
 
+  socket.on('trigger strike', function(strike_count) {
+    socket.broadcast.emit('trigger strike', strike_count);
+  });
+
+
   socket.on('disconnect', function(){
     console.log('user disconnected');
   });
+
 });
 
 http.listen(3000, '0.0.0.0', function(){

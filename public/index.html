@@ -20,6 +20,23 @@
         document.querySelector(`[data-reactid="${target}"]`).classList.add('reveal');
       });
 
+      socket.on('trigger strike', function(strike_count){
+        var strike_class;
+        switch (strike_count) {
+        case 1:
+          strike_class = '.one-strike';
+          break;
+        case 2:
+          strike_class = '.two-strikes';
+          break;
+        case 3:
+          strike_class = '.three-strikes';
+          break;
+        }
+        $(strike_class).show();
+        setTimeout(function() { $(strike_class).hide(); }, 1000);
+      });
+
     </script>
   </head>
   <body>

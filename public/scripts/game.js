@@ -43,6 +43,9 @@ var Game = React.createClass({
     }
     this.props.setQuestions(data, shuffled);
   },
+  triggerStrike: function() {
+    this.props.incrementStrikeCount(this.props.strikeCount + 1);
+  },
   render: function() {
     return(
       <div>
@@ -55,6 +58,11 @@ var Game = React.createClass({
         	<div className="two-strikes">☒☒</div>
         	<div className="three-strikes">☒☒☒</div>
         </section>
+    {this.props.judge &&
+      <div>
+        <button onClick={this.triggerStrike}> Wrong! </button>
+      </div>
+    }
       </div>
     );
   }
@@ -123,6 +131,7 @@ var Provider = ReactRedux.Provider;
 var connect = ReactRedux.connect;
 
 var initialState = {
+  strikeCount: 0,
   judge: false,
   beginGame: false,
   keys: [],
@@ -146,11 +155,13 @@ var reducer = function(state, action) {
       break;
     case 'become_judge':
       newState = Object.assign({}, state, {judge: true});
-      console.log(newState);
       break;
     case 'update_state':
       newState = Object.assign({}, state, action.new_state);
       break;
+    case 'increment_strike':
+      newState = Object.assign({}, state, {strikeCount: action.strikeCount});
+      socket.emit('trigger strike', action.strikeCount);
   }
   return newState;
 }
@@ -160,6 +171,7 @@ var store = createStore(reducer, initialState);
 //Pass initial state to game as props
 var GameState = function(state) {
   return{
+    strikeCount: state.strikeCount,
     judge: state.judge,
     beginGame: state.beginGame,
     keys: state.keys,
@@ -182,7 +194,7 @@ var GameDispatch = function(dispatch) {
         type: 'start_play'
       });
     },
-    becomeJudge: function(){
+    becomeJudge: function() {
       dispatch({
         type: 'become_judge'
       });
@@ -193,8 +205,15 @@ var GameDispatch = function(dispatch) {
         new_state: new_state
       });
     },
+    incrementStrikeCount: function(count) {
+      dispatch({
+        type: 'increment_strike',
+        strikeCount: count
+      });
+    },
   }
 }
+
 StartPage = connect(
   GameState,
   GameDispatch

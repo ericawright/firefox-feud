@@ -38,7 +38,6 @@ div span.points {
 }
 
 section.strikes {
-  display: none;
   color: red;
 }
 
@@ -46,6 +45,7 @@ section.strikes div {
   position: fixed;
   font-size: 20em;
   top: 0.5em;
+  display:none;
 }
 
 .flip-container {
