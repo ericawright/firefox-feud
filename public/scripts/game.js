@@ -1,7 +1,14 @@
 var StartPage = React.createClass({
+  setUpStartPlay: function(){
+    this.props.startPlay();
+  },
   render: function() {
+    var self = this;
+    socket.on('update game', function(data){
+      self.props.updateState(data);
+    });
     var play = this.props.beginGame;
-    var content = play? <Game/ > : <div><p>Welcome</p><button onClick={this.props.startPlay}> Play!</button></div>;
+    var content = play? <Game/ > : <div><p>Welcome</p><button onClick={this.setUpStartPlay}> Play!</button></div>;
     return (
       <div>
         {content}
@@ -41,24 +48,28 @@ var Game = React.createClass({
   render: function() {
     return(
       <div>
-          {
-            this.props.data.nameSomethingThatFirefoxDoes && <header><h1>{this.props.keys[0].replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); })}</h1></header>
-          }
-          <AnswerSection />
-          <section className="strikes">
-          	<div className="one-strike">☒</div>
-          	<div className="two-strikes">☒☒</div>
-          	<div className="three-strikes">☒☒☒</div>
-          </section>
-          </div>
+        {
+          this.props.data.nameSomethingThatFirefoxDoes && <header><h1>{this.props.keys[0].replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); })}</h1></header>
+        }
+        <AnswerSection />
+        <section className="strikes">
+        	<div className="one-strike">☒</div>
+        	<div className="two-strikes">☒☒</div>
+        	<div className="three-strikes">☒☒☒</div>
+        </section>
+      </div>
     );
   }
 });
 
 var AnswerContainer = React.createClass({
+  emitRevealAnswer: function(e){
+     var react_id = e.target.dataset.reactid;
+     socket.emit('reveal answer', react_id);
+  },
   render: function() {
     return(
-      <div className="flip-container">
+      <div className="flip-container" onClick={this.emitRevealAnswer}>
         <div className="flipper">
           <div className="front face">{this.props.index}</div>
           <div className="back face">
@@ -125,9 +136,13 @@ var reducer = function(state, action) {
   switch(action.type) {
     case 'set_questions':
       newState = Object.assign({}, state, {data: action.data, keys: action.keys});
+      socket.emit('update game', newState);
       break;
     case 'start_play':
       newState = Object.assign({}, state, {beginGame: true});
+      break;
+    case 'update_state':
+      newState = Object.assign({}, state, action.new_state);
       break;
   }
   return newState;
@@ -152,13 +167,19 @@ var GameDispatch = function(dispatch) {
         type: 'set_questions',
         data: data,
         keys: keys
-      })
+      });
     },
     startPlay: function() {
       dispatch({
         type: 'start_play'
-      })
-    }
+      });
+    },
+    updateState: function(new_state) {
+      dispatch({
+        type: 'update_state',
+        new_state: new_state
+      });
+    },
   }
 }
 StartPage = connect(
@@ -170,13 +191,15 @@ Game = connect(
   GameDispatch
 )(Game)
 AnswerContainer = connect(
-   GameState,
-   GameDispatch
+  GameState,
+  GameDispatch
 )(AnswerContainer)
 AnswerSection = connect(
   GameState,
   GameDispatch
 )(AnswerSection)
+
+
 
 ReactDOM.render(
   <Provider store={store}>

@@ -62,8 +62,8 @@ section.strikes div {
   transform-style: preserve-3d;
   transition: all 1.0s linear;
 }
-.flip-container:hover .flipper {
-  transform: rotateX(180deg);
+.flip-container.reveal .flipper {
+  /*transform: rotateX(180deg);*/
 }
 .face {
   position: absolute;

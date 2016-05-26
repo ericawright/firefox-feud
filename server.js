@@ -4,6 +4,8 @@ var path = require('path');
 var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
 var DATA_FILE = path.join(__dirname, 'feud-data-order.json');
 
@@ -32,6 +34,26 @@ app.get('/api/feud-data', function(req, res) {
   });
 });
 
-app.listen(app.get('port'), function() {
-  console.log('Server started: http://localhost:' + app.get('port') + '/');
+app.get('/', function(req, res){
+  res.sendfile('index.html');
+});
+
+io.on('connection', function(socket){
+  console.log('a user connected');
+
+  socket.on('reveal answer', function(react_id){
+    socket.broadcast.emit('reveal answer', react_id);
+  });
+
+  socket.on('update game', function(state){
+    socket.broadcast.emit('update game', state);
+  });
+
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+});
+
+http.listen(3000, function(){
+  console.log('listening on *:3000');
 });
