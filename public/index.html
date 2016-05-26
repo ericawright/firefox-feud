@@ -16,11 +16,8 @@
       $(window).on('beforeunload', function(){
           socket.close();
       });
-
       socket.on('reveal answer', function(target){
-        // console.log('inner hit')
-        // console.log(target)
-        // target.classList.add('reveal');
+        document.querySelector(`[data-reactid="${target}"]`).classList.add('reveal');
       });
 
     </script>

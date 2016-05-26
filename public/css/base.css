@@ -63,7 +63,7 @@ section.strikes div {
   transition: all 1.0s linear;
 }
 .flip-container.reveal .flipper {
-  /*transform: rotateX(180deg);*/
+  transform: rotateX(180deg);
 }
 .face {
   position: absolute;

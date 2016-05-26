@@ -1,14 +1,11 @@
 var StartPage = React.createClass({
-  setUpStartPlay: function(){
-    this.props.startPlay();
-  },
   render: function() {
     var self = this;
     socket.on('update game', function(data){
-      self.props.updateState(data);
+      self.props.updateState(Object.assign({}, data, {judge: self.props.judge}));
     });
     var play = this.props.beginGame;
-    var content = play? <Game/ > : <div><p>Welcome</p><button onClick={this.setUpStartPlay}> Play!</button></div>;
+    var content = play? <Game /> : <div><p>Welcome</p><button onClick={this.props.startPlay}> Play!</button><button onClick={this.props.becomeJudge}>judge</button></div>;
     return (
       <div>
         {content}
@@ -35,6 +32,7 @@ var Game = React.createClass({
     this.loadQuestionsFromJson();
   },
   shuffleQuestions: function(data) {
+    //randomize the keys to the questions (originally they are in alphabetical order)
     var keys = Object.keys(data);
     var shuffled = keys.slice(0), i = keys.length, temp, index;
     while (i--) {
@@ -64,12 +62,13 @@ var Game = React.createClass({
 
 var AnswerContainer = React.createClass({
   emitRevealAnswer: function(e){
-     var react_id = e.target.dataset.reactid;
+     var react_id = e.currentTarget.dataset.reactid;
      socket.emit('reveal answer', react_id);
   },
   render: function() {
+    var reveal = this.props.judge? ' reveal': ''
     return(
-      <div className="flip-container" onClick={this.emitRevealAnswer}>
+      <div className={"flip-container" + reveal} onClick={this.emitRevealAnswer}>
         <div className="flipper">
           <div className="front face">{this.props.index}</div>
           <div className="back face">
@@ -121,6 +120,7 @@ var Provider = ReactRedux.Provider;
 var connect = ReactRedux.connect;
 
 var initialState = {
+  judge: false,
   beginGame: false,
   keys: [],
   data: [],
@@ -141,6 +141,10 @@ var reducer = function(state, action) {
     case 'start_play':
       newState = Object.assign({}, state, {beginGame: true});
       break;
+    case 'become_judge':
+      newState = Object.assign({}, state, {judge: true});
+      console.log(newState);
+      break;
     case 'update_state':
       newState = Object.assign({}, state, action.new_state);
       break;
@@ -153,6 +157,7 @@ var store = createStore(reducer, initialState);
 //Pass initial state to game as props
 var GameState = function(state) {
   return{
+    judge: state.judge,
     beginGame: state.beginGame,
     keys: state.keys,
     url: state.url,
@@ -172,6 +177,11 @@ var GameDispatch = function(dispatch) {
     startPlay: function() {
       dispatch({
         type: 'start_play'
+      });
+    },
+    becomeJudge: function(){
+      dispatch({
+        type: 'become_judge'
       });
     },
     updateState: function(new_state) {
