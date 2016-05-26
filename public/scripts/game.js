@@ -42,7 +42,7 @@ var Game = React.createClass({
     return(
       <div>
           {
-            this.props.data.nameSomethingThatFirefoxDoes && <header><h1>{this.props.keys[0]}</h1></header>
+            this.props.data.nameSomethingThatFirefoxDoes && <header><h1>{this.props.keys[0].replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); })}</h1></header>
           }
           <AnswerSection />
           <section className="strikes">
