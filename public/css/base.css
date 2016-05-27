@@ -88,3 +88,7 @@ section.strikes div {
   text-align: center;
   background-color: #aaa;
 }
+
+#judgeLogin {
+  display: none;
+}

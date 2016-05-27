@@ -1,14 +1,31 @@
 let StartPage = React.createClass({
+  loginJudge: function () {
+    var becomeJudge = this.props.becomeJudge;
+    $('#judgeLogin').show();
+    $('#submitJudgeLogin').on('click', function(){
+      if ($('#judgeName').val() == 'judge' && $('#judgePass').val() == 'P4ssword') {
+        becomeJudge();
+        alert("success!")
+      }
+      $('#judgeLogin').hide();
+    });
+  },
   render: function () {
     let self = this;
     socket.on('update game', function (data) {
       self.props.updateState(Object.assign({}, data, {judge: self.props.judge}));
     });
     let play = this.props.beginGame;
-    let content = play ? <Game /> : <div><p>Welcome</p><button onClick={this.props.startPlay}> Play!</button><button onClick={this.props.becomeJudge}>judge</button></div>;
+    let content = play ? <Game /> : <div><p>Welcome</p><button onClick={this.props.startPlay}> Play!</button><button onClick={this.loginJudge}>judge</button></div>;
     return (
       <div>
         {content}
+        <div id="judgeLogin">
+          <h2>Login</h2>
+          <input id="judgeName" name="user_name" placeholder="User Name" type="text"/>
+          <input id="judgePass" name="password" type="password"/>
+          <button id="submitJudgeLogin"> Submit </button>
+        </div>
       </div>
     )
   }
