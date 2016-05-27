@@ -12,13 +12,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-      var socket = io();
+      let socket = io();
       $(window).on('beforeunload', function(){
           socket.close();
       });
 
       socket.on('trigger strike', function(strike_count){
-        var strike_class;
+        let strike_class;
         switch (strike_count) {
         case 1:
           strike_class = '.one-strike';

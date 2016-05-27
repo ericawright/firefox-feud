@@ -1,11 +1,11 @@
-var StartPage = React.createClass({
-  render: function() {
-    var self = this;
-    socket.on('update game', function(data){
+let StartPage = React.createClass({
+  render: function () {
+    let self = this;
+    socket.on('update game', function (data) {
       self.props.updateState(Object.assign({}, data, {judge: self.props.judge}));
     });
-    var play = this.props.beginGame;
-    var content = play? <Game /> : <div><p>Welcome</p><button onClick={this.props.startPlay}> Play!</button><button onClick={this.props.becomeJudge}>judge</button></div>;
+    let play = this.props.beginGame;
+    let content = play ? <Game /> : <div><p>Welcome</p><button onClick={this.props.startPlay}> Play!</button><button onClick={this.props.becomeJudge}>judge</button></div>;
     return (
       <div>
         {content}
@@ -14,27 +14,27 @@ var StartPage = React.createClass({
   }
 });
 
-var Game = React.createClass({
-  loadQuestionsFromJson: function() {
+let Game = React.createClass({
+  loadQuestionsFromJson: function () {
     $.ajax({
       url: this.props.url,
       dataType: 'json',
       cache: false,
-      success: function(data) {
-        this.shuffleQuestions(data);
+      success: function (data) {
+        this.shuffleQuestions (data);
       }.bind(this),
-      error: function(xhr, status, err) {
+      error: function (xhr, status, err) {
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
   },
-  componentDidMount: function() {
+  componentDidMount: function () {
     this.loadQuestionsFromJson();
   },
-  shuffleQuestions: function(data) {
+  shuffleQuestions: function (data) {
     //randomize the keys to the questions (originally they are in alphabetical order)
-    var keys = Object.keys(data);
-    var shuffled = keys.slice(0), i = keys.length, temp, index;
+    let keys = Object.keys(data);
+    let shuffled = keys.slice(0), i = keys.length, temp, index;
     while (i--) {
         index = Math.floor((i + 1) * Math.random());
         temp = shuffled[index];
@@ -43,17 +43,17 @@ var Game = React.createClass({
     }
     this.props.setQuestions(data, shuffled);
   },
-  triggerStrike: function() {
+  triggerStrike: function () {
     this.props.incrementStrikeCount(this.props.strikeCount + 1);
   },
-  nextQuestion: function() {
+  nextQuestion: function () {
     this.props.advanceQuestion();
   },
-  render: function() {
+  render: function () {
     return(
       <div>
-        {
-          this.props.data.nameSomethingThatFirefoxDoes && <header><h1>{this.props.keys[this.props.currentQuestion].replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); })}</h1></header>
+        {this.props.data.nameSomethingThatFirefoxDoes &&
+          <header><h1>{this.props.keys[this.props.currentQuestion].replace(/([A-Z])/g, ' $1').replace(/^./, function (str){ return str.toUpperCase(); })}</h1></header>
         }
         <AnswerSection />
         <section className="strikes">
@@ -61,7 +61,7 @@ var Game = React.createClass({
         	<div className="two-strikes">☒☒</div>
         	<div className="three-strikes">☒☒☒</div>
         </section>
-        {this.props.judge &&
+        { this.props.judge &&
           <div>
             <button onClick={this.triggerStrike}> Wrong! </button>
             <button onClick={this.nextQuestion}> Next Question </button>
@@ -72,17 +72,17 @@ var Game = React.createClass({
   }
 });
 
-var AnswerContainer = React.createClass({
+let AnswerContainer = React.createClass({
   emitRevealAnswer: function(e) {
     if (this.props.judge) {
       this.props.addRevealedAnswer(this.props.index);
     }
   },
-  render: function() {
-    var reveal = '';
-    var clicked = false;
-    var index = this.props.index;
-    this.props.revealedAnswers.forEach(function(revealed){
+  render: function () {
+    let reveal = '';
+    let clicked = false;
+    let index = this.props.index;
+    this.props.revealedAnswers.forEach(function (revealed) {
       if (revealed === index) {
         clicked = true;
       }
@@ -107,30 +107,28 @@ var AnswerContainer = React.createClass({
   }
 });
 
-var AnswerSection = React.createClass({
-  componentDidMount: function() {
-  },
-  calculateContainers: function() {
-    var containers = [];
-    var sortable = [];
-    var count_total = {};
+let AnswerSection = React.createClass({
+  calculateContainers: function () {
+    let containers = [];
+    let sortable = [];
+    let count_total = {};
     if (this.props.keys.length) {
-      this.props.data[this.props.keys[this.props.currentQuestion]].forEach(function(answer){
+      this.props.data[this.props.keys[this.props.currentQuestion]].forEach(function (answer) {
          count_total[answer] = (count_total[answer] || 0) + 1;
       });
-      for (var key in count_total) {
+      for (let key in count_total) {
         sortable.push([key, count_total[key]])
       }
-      sortable.sort(function(a, b) {return  b[1] - a[1]})
-      $.each(sortable, function(i, value) {
-        var answer = value[0];
-        var count = value[1];
+      sortable.sort(function (a, b) {return  b[1] - a[1]})
+      $.each(sortable, function (i, value) {
+        let answer = value[0];
+        let count = value[1];
         containers.push(<AnswerContainer key={i} index={i+1} answer={answer} count={count}/>);
       });
     }
     return containers;
   },
-  render: function() {
+  render: function () {
     return(
       <section className='answers'>
         {this.calculateContainers()}
@@ -141,11 +139,11 @@ var AnswerSection = React.createClass({
 });
 
 //createStore, provider, and set initial State
-var createStore = Redux.createStore;
-var Provider = ReactRedux.Provider;
-var connect = ReactRedux.connect;
+let createStore = Redux.createStore;
+let Provider = ReactRedux.Provider;
+let connect = ReactRedux.connect;
 
-var initialState = {
+let initialState = {
   currentQuestion: 0,
   strikeCount: 0,
   judge: false,
@@ -156,20 +154,20 @@ var initialState = {
   revealedAnswers: []
 }
 
-var reducer = function(state, action) {
+let reducer = function (state, action) {
   if (state === undefined) {
     return initialState;
   }
-  var newState = state;
+  let newState = state;
 
-  switch(action.type) {
+  switch (action.type) {
     case 'set_questions':
       newState = Object.assign({}, state, {data: action.data, keys: action.keys});
       socket.emit('update game', newState);
       break;
     case 'advance_question':
-      var nextQuestion = state.currentQuestion + 1;
-      newState = Object.assign({}, state, { strikeCount: 0, currentQuestion: nextQuestion, revealedAnswers: [] });
+      let nextQuestion = state.currentQuestion + 1;
+      newState = Object.assign({}, state, {strikeCount: 0, currentQuestion: nextQuestion, revealedAnswers: []});
       socket.emit('update game', newState);
       break;
     case 'start_play':
@@ -194,11 +192,11 @@ var reducer = function(state, action) {
   return newState;
 }
 
-var store = createStore(reducer, initialState);
+let store = createStore(reducer, initialState);
 
 //Pass initial state to game as props
-var GameState = function(state) {
-  return{
+let GameState = function (state) {
+  return {
     strikeCount: state.strikeCount,
     judge: state.judge,
     beginGame: state.beginGame,
@@ -210,43 +208,43 @@ var GameState = function(state) {
   }
 }
 
-var GameDispatch = function(dispatch) {
+let GameDispatch = function (dispatch) {
   return {
-    setQuestions: function(data, keys) {
+    setQuestions: function (data, keys) {
       dispatch({
         type: 'set_questions',
         data: data,
         keys: keys
       });
     },
-    advanceQuestion: function(){
+    advanceQuestion: function () {
       dispatch({
         type: 'advance_question'
       });
     },
-    startPlay: function() {
+    startPlay: function () {
       dispatch({
         type: 'start_play'
       });
     },
-    becomeJudge: function() {
+    becomeJudge: function () {
       dispatch({
         type: 'become_judge'
       });
     },
-    updateState: function(new_state) {
+    updateState: function (new_state) {
       dispatch({
         type: 'update_state',
         new_state: new_state
       });
     },
-    incrementStrikeCount: function(count) {
+    incrementStrikeCount: function (count) {
       dispatch({
         type: 'increment_strike',
         strikeCount: count
       });
     },
-    addRevealedAnswer: function(answer) {
+    addRevealedAnswer: function (answer) {
       dispatch({
         type: 'reveal_answer',
         answer: answer
