@@ -16,7 +16,7 @@ let StartPage = React.createClass({
   },
   render: function () {
     if (this.props.gameLength != 0 && (this.props.currentQuestion) == this.props.gameLength) {
-      alert("game over!")
+      alert("game over!"); // TODO go back to homepage?
     }
     let self = this;
     socket.on('update game', function (data) {
@@ -59,8 +59,10 @@ let Game = React.createClass({
   },
   shuffleQuestions: function (data) {
     //randomize the keys to the questions (originally they are in alphabetical order)
-    let keys = Object.keys(data);
-    let shuffled = keys.slice(0), i = keys.length, temp, index;
+    //TODO, prioritize lower counter numbers
+
+    let key_array = Object.keys(data);
+    let shuffled = key_array.slice(0), i = key_array.length, temp, index;
     while (i--) {
         index = Math.floor((i + 1) * Math.random());
         temp = shuffled[index];
@@ -136,22 +138,15 @@ let AnswerContainer = React.createClass({
 let AnswerSection = React.createClass({
   calculateContainers: function () {
     let containers = [];
-    let sortable = [];
-    let count_total = {};
+
     if (this.props.keys.length) {
-      this.props.data[this.props.keys[this.props.currentQuestion]].forEach(function (answer) {
-         count_total[answer] = (count_total[answer] || 0) + 1;
-      });
-      for (let key in count_total) {
-        sortable.push([key, count_total[key]])
-      }
-      sortable.sort(function (a, b) {return  b[1] - a[1]})
-      $.each(sortable, function (i, value) {
+      $.each(this.props.data[this.props.keys[this.props.currentQuestion]].answers, function (i, value) {
         let answer = value[0];
         let count = value[1];
         containers.push(<AnswerContainer key={i} index={i+1} answer={answer} count={count}/>);
       });
     }
+
     return containers;
   },
   render: function () {
