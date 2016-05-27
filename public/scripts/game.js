@@ -46,11 +46,14 @@ var Game = React.createClass({
   triggerStrike: function() {
     this.props.incrementStrikeCount(this.props.strikeCount + 1);
   },
+  nextQuestion: function() {
+    this.props.advanceQuestion();
+  },
   render: function() {
     return(
       <div>
         {
-          this.props.data.nameSomethingThatFirefoxDoes && <header><h1>{this.props.keys[0].replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); })}</h1></header>
+          this.props.data.nameSomethingThatFirefoxDoes && <header><h1>{this.props.keys[this.props.currentQuestion].replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); })}</h1></header>
         }
         <AnswerSection />
         <section className="strikes">
@@ -58,11 +61,12 @@ var Game = React.createClass({
         	<div className="two-strikes">☒☒</div>
         	<div className="three-strikes">☒☒☒</div>
         </section>
-    {this.props.judge &&
-      <div>
-        <button onClick={this.triggerStrike}> Wrong! </button>
-      </div>
-    }
+        {this.props.judge &&
+          <div>
+            <button onClick={this.triggerStrike}> Wrong! </button>
+            <button onClick={this.nextQuestion}> Next Question </button>
+          </div>
+        }
       </div>
     );
   }
@@ -71,20 +75,31 @@ var Game = React.createClass({
 var AnswerContainer = React.createClass({
   emitRevealAnswer: function(e) {
     if (this.props.judge) {
-      e.currentTarget.classList.add('clicked');
-      var react_id = e.currentTarget.dataset.reactid;
-      socket.emit('reveal answer', react_id);
-   }
+      this.props.addRevealedAnswer(this.props.index);
+    }
   },
   render: function() {
-    var reveal = this.props.judge? ' reveal': ''
+    var reveal = '';
+    var clicked = false;
+    var index = this.props.index;
+    this.props.revealedAnswers.forEach(function(revealed){
+      if (revealed === index) {
+        clicked = true;
+      }
+    });
+    if (this.props.judge && clicked) {
+      reveal = ' reveal clicked';
+    } else if (this.props.judge || clicked) {
+      reveal = ' reveal';
+    }
+
     return(
-      <div className={"flip-container" + reveal} onClick={this.emitRevealAnswer}>
-        <div className="flipper">
-          <div className="front face">{this.props.index}</div>
-          <div className="back face">
-            <span className="answer">{this.props.answer}</span>
-            <span className="points">{this.props.count}</span>
+      <div className={'flip-container' + reveal} onClick={this.emitRevealAnswer}>
+        <div className='flipper'>
+          <div className='front face'>{index}</div>
+          <div className='back face'>
+            <span className='answer'>{this.props.answer}</span>
+            <span className='points'>{this.props.count}</span>
           </div>
         </div>
       </div>
@@ -100,7 +115,7 @@ var AnswerSection = React.createClass({
     var sortable = [];
     var count_total = {};
     if (this.props.keys.length) {
-      this.props.data[this.props.keys[0]].forEach(function(answer){
+      this.props.data[this.props.keys[this.props.currentQuestion]].forEach(function(answer){
          count_total[answer] = (count_total[answer] || 0) + 1;
       });
       for (var key in count_total) {
@@ -117,7 +132,7 @@ var AnswerSection = React.createClass({
   },
   render: function() {
     return(
-      <section className="answers">
+      <section className='answers'>
         {this.calculateContainers()}
       </section>
     );
@@ -131,12 +146,14 @@ var Provider = ReactRedux.Provider;
 var connect = ReactRedux.connect;
 
 var initialState = {
+  currentQuestion: 0,
   strikeCount: 0,
   judge: false,
   beginGame: false,
   keys: [],
   data: [],
-  url: "/api/feud-data",
+  url: '/api/feud-data',
+  revealedAnswers: []
 }
 
 var reducer = function(state, action) {
@@ -148,6 +165,11 @@ var reducer = function(state, action) {
   switch(action.type) {
     case 'set_questions':
       newState = Object.assign({}, state, {data: action.data, keys: action.keys});
+      socket.emit('update game', newState);
+      break;
+    case 'advance_question':
+      var nextQuestion = state.currentQuestion + 1;
+      newState = Object.assign({}, state, { strikeCount: 0, currentQuestion: nextQuestion, revealedAnswers: [] });
       socket.emit('update game', newState);
       break;
     case 'start_play':
@@ -162,6 +184,12 @@ var reducer = function(state, action) {
     case 'increment_strike':
       newState = Object.assign({}, state, {strikeCount: action.strikeCount});
       socket.emit('trigger strike', action.strikeCount);
+      break;
+    case 'reveal_answer':
+      newState = Object.assign({}, state, {});
+      newState.revealedAnswers = [...state.revealedAnswers, action.answer];
+      socket.emit('update game', newState);
+      break;
   }
   return newState;
 }
@@ -175,8 +203,10 @@ var GameState = function(state) {
     judge: state.judge,
     beginGame: state.beginGame,
     keys: state.keys,
+    currentQuestion: state.currentQuestion,
     url: state.url,
-    data: state.data
+    data: state.data,
+    revealedAnswers: state.revealedAnswers
   }
 }
 
@@ -187,6 +217,11 @@ var GameDispatch = function(dispatch) {
         type: 'set_questions',
         data: data,
         keys: keys
+      });
+    },
+    advanceQuestion: function(){
+      dispatch({
+        type: 'advance_question'
       });
     },
     startPlay: function() {
@@ -211,6 +246,12 @@ var GameDispatch = function(dispatch) {
         strikeCount: count
       });
     },
+    addRevealedAnswer: function(answer) {
+      dispatch({
+        type: 'reveal_answer',
+        answer: answer
+      });
+    }
   }
 }
 

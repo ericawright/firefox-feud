@@ -16,9 +16,6 @@
       $(window).on('beforeunload', function(){
           socket.close();
       });
-      socket.on('reveal answer', function(target){
-        document.querySelector(`[data-reactid="${target}"]`).classList.add('reveal');
-      });
 
       socket.on('trigger strike', function(strike_count){
         var strike_class;
