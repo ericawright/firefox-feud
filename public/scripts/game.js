@@ -5,7 +5,7 @@ let StartPage = React.createClass({
     $('#submitJudgeLogin').on('click', function(){
       if ($('#judgeName').val() == 'judge' && $('#judgePass').val() == 'P4ssword') {
         becomeJudge();
-        alert("success!")
+        alert("success!");
       }
       $('#judgeLogin').hide();
     });
@@ -47,7 +47,7 @@ let Game = React.createClass({
       dataType: 'json',
       cache: false,
       success: function (data) {
-        this.shuffleQuestions (data);
+        this.sortQuestions (data);
       }.bind(this),
       error: function (xhr, status, err) {
         console.error(this.props.url, status, err.toString());
@@ -57,11 +57,15 @@ let Game = React.createClass({
   componentDidMount: function () {
     this.loadQuestionsFromJson();
   },
-  shuffleQuestions: function (data) {
-    //randomize the keys to the questions (originally they are in alphabetical order)
-    //TODO, prioritize lower counter numbers
-
-    let key_array = Object.keys(data);
+  sortQuestions: function (data) {
+    var key_array = [];
+    var new_key_array = [];
+    var old_key_array = [];
+    for (var question in data) {
+      key_array.push([question, data[question]["counter"]]);
+    }
+    key_array.sort(function(a, b) {return a[1] - b[1]});
+    var lower_number = key_array[0][1];
     let shuffled = key_array.slice(0), i = key_array.length, temp, index;
     while (i--) {
         index = Math.floor((i + 1) * Math.random());
@@ -69,7 +73,15 @@ let Game = React.createClass({
         shuffled[index] = shuffled[i];
         shuffled[i] = temp;
     }
-    this.props.setQuestions(data, shuffled);
+
+    shuffled.forEach(function(key){
+      if (key[1] === lower_number) {
+        new_key_array.push(key);
+      }else{
+        old_key_array.push(key);
+      }
+    });
+    this.props.setQuestions(data, new_key_array, old_key_array);
   },
   triggerStrike: function () {
     this.props.incrementStrikeCount(this.props.strikeCount + 1);
@@ -80,8 +92,8 @@ let Game = React.createClass({
   render: function () {
     return(
       <div>
-        {this.props.data.nameSomethingThatFirefoxDoes &&
-          <header><h1>{this.props.keys[this.props.currentQuestion].replace(/([A-Z])/g, ' $1').replace(/^./, function (str){ return str.toUpperCase(); })}</h1></header>
+        {this.props.keysNew.length &&
+          <header><h1>{this.props.keysNew[this.props.currentQuestion][0].replace(/([A-Z])/g, ' $1').replace(/^./, function (str) { return str.toUpperCase(); })}</h1></header>
         }
         <AnswerSection />
         <section className="strikes">
@@ -89,7 +101,7 @@ let Game = React.createClass({
         	<div className="two-strikes">☒☒</div>
         	<div className="three-strikes">☒☒☒</div>
         </section>
-        { this.props.judge &&
+        {this.props.judge &&
           <div>
             <button onClick={this.triggerStrike}> Wrong! </button>
             <button onClick={this.nextQuestion}> Next Question </button>
@@ -139,8 +151,8 @@ let AnswerSection = React.createClass({
   calculateContainers: function () {
     let containers = [];
 
-    if (this.props.keys.length) {
-      $.each(this.props.data[this.props.keys[this.props.currentQuestion]].answers, function (i, value) {
+    if (this.props.keysNew.length != 0) {
+      $.each(this.props.data[this.props.keysNew[this.props.currentQuestion][0]].answers, function (i, value) {
         let answer = value[0];
         let count = value[1];
         containers.push(<AnswerContainer key={i} index={i+1} answer={answer} count={count}/>);
@@ -170,8 +182,10 @@ let initialState = {
   strikeCount: 0,
   judge: false,
   beginGame: false,
-  keys: [],
-  data: [],
+  keysNew: [],
+  keysUsed: [],
+  keysOld: [],
+  data: {},
   url: '/api/feud-data',
   revealedAnswers: []
 }
@@ -184,12 +198,17 @@ let reducer = function (state, action) {
 
   switch (action.type) {
     case 'set_questions':
-      newState = Object.assign({}, state, {data: action.data, keys: action.keys});
+      console.log(action);
+      newState = Object.assign({}, state, {data: action.data, keysNew: action.new_keys, keysOld: action.old_keys});
       socket.emit('update game', newState);
       break;
     case 'advance_question':
       let nextQuestion = state.currentQuestion + 1;
       newState = Object.assign({}, state, {strikeCount: 0, currentQuestion: nextQuestion, revealedAnswers: []});
+      if (!newState.keysNew[nextQuestion]) {
+        nextQuestion = 0;
+        newState.keysNew = newState.keysOld;
+      }
       socket.emit('update game', newState);
       break;
     case 'start_play':
@@ -223,7 +242,9 @@ let GameState = function (state) {
     strikeCount: state.strikeCount,
     judge: state.judge,
     beginGame: state.beginGame,
-    keys: state.keys,
+    keysNew: state.keysNew,
+    keysUsed: state.keysUsed,
+    keysOld: state.keysOld,
     currentQuestion: state.currentQuestion,
     url: state.url,
     data: state.data,
@@ -233,11 +254,12 @@ let GameState = function (state) {
 
 let GameDispatch = function (dispatch) {
   return {
-    setQuestions: function (data, keys) {
+    setQuestions: function (data, new_keys, old_keys) {
       dispatch({
         type: 'set_questions',
         data: data,
-        keys: keys
+        new_keys: new_keys,
+        old_keys: old_keys
       });
     },
     advanceQuestion: function () {
