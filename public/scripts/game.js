@@ -1,6 +1,6 @@
 let StartPage = React.createClass({
   loginJudge: function () {
-    var becomeJudge = this.props.becomeJudge;
+    let becomeJudge = this.props.becomeJudge;
     $('#judgeLogin').show();
     $('#submitJudgeLogin').on('click', function(){
       if ($('#judgeName').val() == 'judge' && $('#judgePass').val() == 'P4ssword') {
@@ -10,13 +10,22 @@ let StartPage = React.createClass({
       $('#judgeLogin').hide();
     });
   },
+  setUpGame: function () {
+    let game_length = $('input[name=length]:checked').val();
+    this.props.startPlay(game_length);
+  },
   render: function () {
+    if (this.props.gameLength != 0 && (this.props.currentQuestion) == this.props.gameLength) {
+      alert("game over!")
+    }
     let self = this;
     socket.on('update game', function (data) {
       self.props.updateState(Object.assign({}, data, {judge: self.props.judge}));
     });
     let play = this.props.beginGame;
-    let content = play ? <Game /> : <div><p>Welcome</p><button onClick={this.props.startPlay}> Play!</button><button onClick={this.loginJudge}>judge</button></div>;
+    let content = play ? <Game /> : <div><p>Welcome!</p><p>What length of game do you want to play?</p><input type="radio" name="length" value='4'> Short </input><br/>
+  <input type="radio" name='5' value="medium"> Medium </input><br/>
+  <input type="radio" name='6' value="long"> Long </input><br/><br/><button onClick={this.loginJudge}> Judge Login </button><button onClick={this.setUpGame}> Play! </button></div>;
     return (
       <div>
         {content}
@@ -161,6 +170,7 @@ let Provider = ReactRedux.Provider;
 let connect = ReactRedux.connect;
 
 let initialState = {
+  gameLength: 0,
   currentQuestion: 0,
   strikeCount: 0,
   judge: false,
@@ -188,7 +198,7 @@ let reducer = function (state, action) {
       socket.emit('update game', newState);
       break;
     case 'start_play':
-      newState = Object.assign({}, state, {beginGame: true});
+      newState = Object.assign({}, state, {beginGame: true, gameLength: action.game_length});
       break;
     case 'become_judge':
       newState = Object.assign({}, state, {judge: true});
@@ -214,6 +224,7 @@ let store = createStore(reducer, initialState);
 //Pass initial state to game as props
 let GameState = function (state) {
   return {
+    gameLength: state.gameLength,
     strikeCount: state.strikeCount,
     judge: state.judge,
     beginGame: state.beginGame,
@@ -239,9 +250,10 @@ let GameDispatch = function (dispatch) {
         type: 'advance_question'
       });
     },
-    startPlay: function () {
+    startPlay: function (game_length) {
       dispatch({
-        type: 'start_play'
+        type: 'start_play',
+        game_length
       });
     },
     becomeJudge: function () {
