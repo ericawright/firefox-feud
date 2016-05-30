@@ -60,6 +60,10 @@ app.get('/', function (req, res) {
 io.on('connection', function (socket) {
   console.log('a user connected');
 
+  socket.on('hide answers', function(state) {
+    socket.broadcast.emit('update game', state);
+  });
+
   socket.on('reveal answer', function (react_id) {
     socket.broadcast.emit('reveal answer', react_id);
   });

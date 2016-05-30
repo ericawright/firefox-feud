@@ -87,7 +87,7 @@ let Game = React.createClass({
     this.props.incrementStrikeCount(this.props.strikeCount + 1);
   },
   nextQuestion: function () {
-    this.props.advanceQuestion();
+    this.props.hideAnswers(this.props.advanceQuestion);
   },
   render: function () {
     return(
@@ -219,12 +219,16 @@ let reducer = function (state, action) {
       break;
     case 'advance_question':
       let nextQuestion = state.currentQuestion + 1;
-      newState = Object.assign({}, state, {strikeCount: 0, currentQuestion: nextQuestion, revealedAnswers: []});
+      newState = Object.assign({}, state, {strikeCount: 0, currentQuestion: nextQuestion});
       if (!newState.keysNew[nextQuestion]) {
         nextQuestion = 0;
         newState.keysNew = newState.keysOld;
       }
       socket.emit('update game', newState);
+      break;
+    case 'hide_answers':
+      newState = newState = Object.assign({}, state, {revealedAnswers: []});
+      socket.emit('hide answers', newState);
       break;
     case 'start_play':
       newState = Object.assign({}, state, {beginGame: true, gameLength: action.game_length});
@@ -275,6 +279,17 @@ let GameDispatch = function (dispatch) {
         data: data,
         new_keys: new_keys,
         old_keys: old_keys
+      });
+    },
+    hideAnswers: function(callback) {
+      function advanceQuestionCallback() {
+        window.removeEventListener('transitionend', advanceQuestionCallback);
+        callback();
+      }
+      window.addEventListener('transitionend', advanceQuestionCallback);
+
+      dispatch({
+        type: 'hide_answers'
       });
     },
     advanceQuestion: function () {
