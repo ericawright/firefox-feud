@@ -15,17 +15,14 @@ let StartPage = React.createClass({
     this.props.startPlay(game_length);
   },
   render: function () {
-    if (this.props.gameLength != 0 && (this.props.currentQuestion) == this.props.gameLength) {
-      alert("game over!"); // TODO go back to homepage?
-    }
     let self = this;
     socket.on('update game', function (data) {
       self.props.updateState(Object.assign({}, data, {judge: self.props.judge}));
     });
     let play = this.props.beginGame;
-    let content = play ? <Game /> : <div><p>Welcome!</p><p>What length of game do you want to play?</p><input type="radio" name="length" value='4'> Short </input><br/>
-  <input type="radio" name='5' value="medium"> Medium </input><br/>
-  <input type="radio" name='6' value="long"> Long </input><br/><br/><button onClick={this.loginJudge}> Judge Login </button><button onClick={this.setUpGame}> Play! </button></div>;
+    let content = play ? <Game /> : <div><p>Welcome!</p><p>What length of game do you want to play?</p><input type="radio" name="length" value='3'> Short </input><br/>
+  <input type="radio" name='4' value="medium"> Medium </input><br/>
+  <input type="radio" name='5' value="long"> Long </input><br/><br/><button onClick={this.loginJudge}> Judge Login </button><button onClick={this.setUpGame}> Play! </button></div>;
     return (
       <div>
         {content}
@@ -87,7 +84,11 @@ let Game = React.createClass({
     this.props.incrementStrikeCount(this.props.strikeCount + 1);
   },
   nextQuestion: function () {
-    this.props.hideAnswers(this.props.advanceQuestion);
+    if (this.props.gameLength != 0 && (this.props.currentQuestion) == this.props.gameLength) {
+      this.props.endGame();
+    } else {
+      this.props.hideAnswers(this.props.advanceQuestion);
+    }
   },
   render: function () {
     return(
@@ -233,6 +234,11 @@ let reducer = function (state, action) {
     case 'start_play':
       newState = Object.assign({}, state, {beginGame: true, gameLength: action.game_length});
       break;
+    case 'end_game' :
+    console.log('end game');
+      newState = Object.assign({}, state, {beginGame: false, gameLength: 0, strikeCount: 0, revealedAnswers: []});
+      socket.emit('update game', newState);
+      break;
     case 'become_judge':
       newState = Object.assign({}, state, {judge: true});
       break;
@@ -262,7 +268,6 @@ let GameState = function (state) {
     judge: state.judge,
     beginGame: state.beginGame,
     keysNew: state.keysNew,
-    keysUsed: state.keysUsed,
     keysOld: state.keysOld,
     currentQuestion: state.currentQuestion,
     url: state.url,
@@ -300,7 +305,7 @@ let GameDispatch = function (dispatch) {
     startPlay: function (game_length) {
       dispatch({
         type: 'start_play',
-        game_length
+        game_length: game_length
       });
     },
     becomeJudge: function () {
@@ -324,6 +329,11 @@ let GameDispatch = function (dispatch) {
       dispatch({
         type: 'reveal_answer',
         answer: answer
+      });
+    },
+    endGame: function() {
+      dispatch({
+        type: 'end_game'
       });
     }
   }
