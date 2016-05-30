@@ -235,7 +235,6 @@ let reducer = function (state, action) {
       newState = Object.assign({}, state, {beginGame: true, gameLength: action.game_length});
       break;
     case 'end_game' :
-    console.log('end game');
       newState = Object.assign({}, state, {beginGame: false, gameLength: 0, strikeCount: 0, revealedAnswers: []});
       socket.emit('update game', newState);
       break;
