@@ -73,7 +73,7 @@ let Game = React.createClass({
         shuffled[index] = shuffled[i];
         shuffled[i] = temp;
     }
-
+    //randomize, then pass to lower number array or higher number array
     shuffled.forEach(function(key){
       if (key[1] === lower_number) {
         new_key_array.push(key);
@@ -115,8 +115,24 @@ let Game = React.createClass({
 let AnswerContainer = React.createClass({
   emitRevealAnswer: function(e) {
     if (this.props.judge) {
+      if (this.props.revealedAnswers.length === 0 ) {
+        this.writeToJSON();
+      }
       this.props.addRevealedAnswer(this.props.index);
     }
+  },
+  writeToJSON: function() {
+    $.ajax({
+      url: this.props.url,
+      dataType: 'json',
+      type: 'POST',
+      data: {question: this.props.keysNew[this.props.currentQuestion][0]},
+      success: function(data) {
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
   },
   render: function () {
     let reveal = '';
@@ -198,7 +214,6 @@ let reducer = function (state, action) {
 
   switch (action.type) {
     case 'set_questions':
-      console.log(action);
       newState = Object.assign({}, state, {data: action.data, keysNew: action.new_keys, keysOld: action.old_keys});
       socket.emit('update game', newState);
       break;

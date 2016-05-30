@@ -34,6 +34,25 @@ app.get('/api/feud-data', function (req, res) {
   });
 });
 
+app.post('/api/feud-data', function(req, res) {
+  fs.readFile(DATA_FILE, function(err, data) {
+    if (err) {
+      console.error(err);
+      process.exit(1);
+    }
+    var questions = JSON.parse(data);
+    var which_question = req.body.question;
+    questions[which_question].counter += 1;
+
+    fs.writeFile(DATA_FILE, JSON.stringify(questions, null, 2), function(err) {
+      if (err) {
+        console.error(err);
+        process.exit(1);
+      }
+    });
+  });
+});
+
 app.get('/', function (req, res) {
   res.sendfile('index.html');
 });
