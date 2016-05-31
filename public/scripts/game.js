@@ -153,7 +153,7 @@ let AnswerContainer = React.createClass({
     return(
       <div className={'flip-container' + reveal} onClick={this.emitRevealAnswer}>
         <div className='flipper'>
-          <div className='front face'>{index}</div>
+          <div className='front face'><span>{index}</span></div>
           <div className='back face'>
             <span className='answer'>{this.props.answer}</span>
             <span className='points'>{this.props.count}</span>
