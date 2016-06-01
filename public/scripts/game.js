@@ -176,7 +176,13 @@ let AnswerSection = React.createClass({
       });
     }
 
-    return containers;
+    while (containers.length < 10) {
+      containers.push(<div className="flip-container blank"></div>);
+    }
+
+    var divided_containers =<div><div className='first_half'>{containers.slice(0, 5)}</div><div className='second_half'>{containers}</div></div>
+
+    return divided_containers;
   },
   render: function () {
     return(
