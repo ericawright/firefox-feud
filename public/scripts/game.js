@@ -180,7 +180,7 @@ let AnswerSection = React.createClass({
       containers.push(<div className="flip-container blank"></div>);
     }
 
-    var divided_containers =<div><div className='first_half'>{containers.slice(0, 5)}</div><div className='second_half'>{containers}</div></div>
+    var divided_containers =<div><div className='first_half'>{containers.slice(0, 5)}</div><div className='second_half'>{containers.slice(5, 10)}</div></div>
 
     return divided_containers;
   },
