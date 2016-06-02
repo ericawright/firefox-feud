@@ -260,6 +260,7 @@ let reducer = function (state, action) {
     case 'reveal_answer':
       newState = Object.assign({}, state, {});
       newState.revealedAnswers = [...state.revealedAnswers, action.answer];
+      socket.emit('trigger correct');
       socket.emit('update game', newState);
       break;
   }

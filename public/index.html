@@ -13,8 +13,16 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
       let socket = io();
+      let wrong_sound = new Audio("./sounds/wrong.wav");
+      let correct_sound = new Audio("./sounds/correct.wav");
+      correct_sound.volume = 0.4;
+
       $(window).on('beforeunload', function(){
           socket.close();
+      });
+
+      socket.on('trigger correct', function (){
+        correct_sound.play();
       });
 
       socket.on('trigger strike', function(strike_count){
@@ -33,6 +41,7 @@
           strike_class = '.one-strike';
           break;
         }
+        wrong_sound.play();
         $(strike_class).show();
         setTimeout(function() { $(strike_class).hide(); }, 1000);
       });

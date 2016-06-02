@@ -76,6 +76,9 @@ io.on('connection', function (socket) {
     socket.broadcast.emit('trigger strike', strike_count);
   });
 
+  socket.on('trigger correct', function () {
+    socket.broadcast.emit('trigger correct');
+  });
 
   socket.on('disconnect', function () {
     console.log('user disconnected');
