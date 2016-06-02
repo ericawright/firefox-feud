@@ -1,0 +1,200 @@
+{
+  "sampleQuestionHere": {
+    "counter": 1,
+    "answers": [
+      [
+        "my answer",
+        37
+      ],
+      [
+        "your answer",
+        22
+      ],
+      [
+        "This one's wrong",
+        6
+      ],
+      [
+        "totally off base",
+        5
+      ],
+      [
+        "what were they even thinking",
+        2
+      ],
+      [
+        "i agree",
+        2
+      ],
+      [
+        "¯\\_(ツ)_/¯",
+        1
+      ]
+    ]
+  },
+  "sampleQuestionNumberFour": {
+    "counter": 1,
+    "answers": [
+      [
+        "my answer",
+        37
+      ],
+      [
+        "your answer",
+        22
+      ],
+      [
+        "This one's wrong",
+        6
+      ],
+      [
+        "totally off base",
+        5
+      ],
+      [
+        "what were they even thinking",
+        2
+      ],
+      [
+        "i agree",
+        2
+      ],
+      [
+        "¯\\_(ツ)_/¯",
+        1
+      ]
+    ]
+  },
+  "sampleQuestionNumberThree": {
+    "counter": 0,
+    "answers": [
+      [
+        "my answer",
+        37
+      ],
+      [
+        "your answer",
+        22
+      ],
+      [
+        "This one's wrong",
+        6
+      ],
+      [
+        "totally off base",
+        5
+      ],
+      [
+        "what were they even thinking",
+        2
+      ],
+      [
+        "i agree",
+        2
+      ],
+      [
+        "¯\\_(ツ)_/¯",
+        1
+      ]
+    ]
+  },
+  "sampleQuestionNumberTwo": {
+    "counter": 0,
+    "answers": [
+      [
+        "my answer",
+        37
+      ],
+      [
+        "your answer",
+        22
+      ],
+      [
+        "This one's wrong",
+        6
+      ],
+      [
+        "totally off base",
+        5
+      ],
+      [
+        "what were they even thinking",
+        2
+      ],
+      [
+        "i agree",
+        2
+      ],
+      [
+        "¯\\_(ツ)_/¯",
+        1
+      ]
+    ]
+  },
+  "sampleQuestionNumberFive": {
+    "counter": 0,
+    "answers": [
+      [
+        "my answer",
+        37
+      ],
+      [
+        "your answer",
+        22
+      ],
+      [
+        "This one's wrong",
+        6
+      ],
+      [
+        "totally off base",
+        5
+      ],
+      [
+        "what were they even thinking",
+        2
+      ],
+      [
+        "i agree",
+        2
+      ],
+      [
+        "¯\\_(ツ)_/¯",
+        1
+      ]
+    ]
+  },
+  "sampleQuestionNumberTheLast": {
+    "counter": 0,
+    "answers": [
+      [
+        "my answer",
+        37
+      ],
+      [
+        "your answer",
+        22
+      ],
+      [
+        "This one's wrong",
+        6
+      ],
+      [
+        "totally off base",
+        5
+      ],
+      [
+        "what were they even thinking",
+        2
+      ],
+      [
+        "i agree",
+        2
+      ],
+      [
+        "¯\\_(ツ)_/¯",
+        1
+      ]
+    ]
+  }
+}

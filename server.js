@@ -7,9 +7,10 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-var DATA_FILE = path.join(__dirname, 'feud-data-order.json');
-
-app.set('port', (process.env.PORT || 3000));
+var MOZ_FILE = 'moz-data.json';
+var SAMPLE_FILE = 'sample-data.json';
+var filename = process.env.MOZ?  MOZ_FILE : SAMPLE_FILE;
+var data_file = path.join(__dirname, filename);
 
 app.use('/', express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
@@ -25,7 +26,7 @@ app.use(function (req, res, next) {
 });
 
 app.get('/api/feud-data', function (req, res) {
-  fs.readFile(DATA_FILE, function (err, data) {
+  fs.readFile(data_file, function (err, data) {
     if (err) {
       console.error(err);
       process.exit(1);
@@ -35,7 +36,7 @@ app.get('/api/feud-data', function (req, res) {
 });
 
 app.post('/api/feud-data', function (req, res) {
-  fs.readFile(DATA_FILE, function (err, data) {
+  fs.readFile(data_file, function (err, data) {
     if (err) {
       console.error(err);
       process.exit(1);
@@ -44,7 +45,7 @@ app.post('/api/feud-data', function (req, res) {
     var which_question = req.body.question;
     questions[which_question].counter += 1;
 
-    fs.writeFile(DATA_FILE, JSON.stringify(questions, null, 2), function(err) {
+    fs.writeFile(data_file, JSON.stringify(questions, null, 2), function(err) {
       if (err) {
         console.error(err);
         process.exit(1);
