@@ -34,8 +34,8 @@ app.get('/api/feud-data', function (req, res) {
   });
 });
 
-app.post('/api/feud-data', function(req, res) {
-  fs.readFile(DATA_FILE, function(err, data) {
+app.post('/api/feud-data', function (req, res) {
+  fs.readFile(DATA_FILE, function (err, data) {
     if (err) {
       console.error(err);
       process.exit(1);
@@ -60,7 +60,7 @@ app.get('/', function (req, res) {
 io.on('connection', function (socket) {
   console.log('a user connected');
 
-  socket.on('hide answers', function(state) {
+  socket.on('hide answers', function (state) {
     socket.broadcast.emit('update game', state);
   });
 

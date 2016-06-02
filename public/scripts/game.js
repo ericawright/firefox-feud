@@ -11,6 +11,7 @@ let StartPage = React.createClass({
     });
   },
   setUpGame: function () {
+    $('#judgeLogin').hide();
     let game_length = $('input[name=length]:checked').val();
     this.props.startPlay(game_length);
   },
@@ -21,8 +22,8 @@ let StartPage = React.createClass({
     });
     let play = this.props.beginGame;
     let content = play ? <Game /> : <div><p>Welcome!</p><p>What length of game do you want to play?</p><input type="radio" name="length" value='3'> Short </input><br/>
-  <input type="radio" name='4' value="medium"> Medium </input><br/>
-  <input type="radio" name='5' value="long"> Long </input><br/><br/><button onClick={this.loginJudge}> Judge Login </button><button onClick={this.setUpGame}> Play! </button></div>;
+  <input type="radio" name='length' value="4"> Medium </input><br/>
+  <input type="radio" name='length' value="5"> Long </input><br/><br/><button onClick={this.loginJudge}> Judge Login </button><button onClick={this.setUpGame}> Play! </button></div>;
     return (
       <div>
         {content}
@@ -61,7 +62,7 @@ let Game = React.createClass({
     for (var question in data) {
       key_array.push([question, data[question]["counter"]]);
     }
-    key_array.sort(function(a, b) {return a[1] - b[1]});
+    key_array.sort(function (a, b) {return a[1] - b[1]});
     var lower_number = key_array[0][1];
     let shuffled = key_array.slice(0), i = key_array.length, temp, index;
     while (i--) {
@@ -114,7 +115,7 @@ let Game = React.createClass({
 });
 
 let AnswerContainer = React.createClass({
-  emitRevealAnswer: function(e) {
+  emitRevealAnswer: function (e) {
     if (this.props.judge) {
       if (this.props.revealedAnswers.length === 0 ) {
         this.writeToJSON();
@@ -122,7 +123,7 @@ let AnswerContainer = React.createClass({
       this.props.addRevealedAnswer(this.props.index);
     }
   },
-  writeToJSON: function() {
+  writeToJSON: function () {
     $.ajax({
       url: this.props.url,
       dataType: 'json',
@@ -167,6 +168,7 @@ let AnswerContainer = React.createClass({
 let AnswerSection = React.createClass({
   calculateContainers: function () {
     let containers = [];
+    let blank_counter = 0;
 
     if (this.props.keysNew.length != 0) {
       $.each(this.props.data[this.props.keysNew[this.props.currentQuestion][0]].answers, function (i, value) {
@@ -177,10 +179,11 @@ let AnswerSection = React.createClass({
     }
 
     while (containers.length < 10) {
-      containers.push(<div className="flip-container blank"></div>);
+      containers.push(<div className="flip-container blank" key={"b" + blank_counter}></div>);
+      blank_counter ++;
     }
 
-    var divided_containers =<div><div className='first_half'>{containers.slice(0, 5)}</div><div className='second_half'>{containers.slice(5, 10)}</div></div>
+    var divided_containers =<div><div className='first_half' key="1" >{containers.slice(0, 5)}</div><div className='second_half' key="2" >{containers.slice(5, 10)}</div></div>
 
     return divided_containers;
   },
