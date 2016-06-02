@@ -92,21 +92,28 @@ let Game = React.createClass({
     }
   },
   render: function () {
+    var next_question = this.props.keysNew[this.props.currentQuestion + 1] || this.props.keysOld[0]
     return(
       <div>
         {this.props.keysNew.length &&
-          <header><h1>{this.props.keysNew[this.props.currentQuestion][0].replace(/([A-Z])/g, ' $1').replace(/^./, function (str) { return str.toUpperCase(); })}</h1></header>
-        }
-        <AnswerSection />
-        <section className="strikes">
-        	<div className="one-strike">☒</div>
-        	<div className="two-strikes">☒☒</div>
-        	<div className="three-strikes">☒☒☒</div>
-        </section>
-        {this.props.judge &&
           <div>
-            <button onClick={this.triggerStrike}> Wrong! </button>
-            <button onClick={this.nextQuestion}> Next Question </button>
+            <header><h1>{this.props.keysNew[this.props.currentQuestion][0].replace(/([A-Z])/g, ' $1').replace(/^./, function (str) { return str.toUpperCase(); })}</h1></header>
+
+            <AnswerSection />
+
+            <section className="strikes">
+            	<div className="one-strike">☒</div>
+            	<div className="two-strikes">☒☒</div>
+            	<div className="three-strikes">☒☒☒</div>
+            </section>
+
+            {this.props.judge &&
+              <div>
+                <button onClick={this.triggerStrike}> Wrong! </button>
+                <button onClick={this.nextQuestion}> Next Question </button>
+                <div>{next_question[0].replace(/([A-Z])/g, ' $1').replace(/^./, function (str) { return str.toUpperCase(); })}</div>
+              </div>
+            }
           </div>
         }
       </div>
