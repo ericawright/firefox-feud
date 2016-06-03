@@ -51,7 +51,7 @@ div span.answer, div span.points {
 }
 
 div span.points {
-  border-left: 4px groove #FDE977;
+  border-left: 4px groove #6E4411;
   width: 2em;
   position: absolute;
   right: 0;
@@ -76,7 +76,7 @@ section.strikes div {
 }
 
 .flip-container.blank {
-	border: 4px groove #A6AAA9;
+	border: 4px groove #FDE977;
 	background-image: url(null.png);
 	background-repeat: space;
 	background-size: 77px;
@@ -111,17 +111,18 @@ section.strikes div {
   text-align: center;
   text-transform: uppercase;
   background-color: #000;
-  border: 4px groove #A6AAA9;
 }
 
 .face.back {
   transform: rotateY(180deg) rotateZ(180deg);
   padding: 0 2.75em 0 0.2em;
+  border: 4px groove #000;
 }
 .face.front {
   background-color: #B7C9DF;
   box-shadow: inset 0px 0px 0px 16px #FEC079;
   color: #FDE977;
+  border: 4px groove #FEC079;
 }
 
 .face.front span {

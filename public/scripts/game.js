@@ -21,7 +21,8 @@ let StartPage = React.createClass({
       self.props.updateState(Object.assign({}, data, {judge: self.props.judge}));
     });
     let play = this.props.beginGame;
-    let content = play ? <Game /> : <div><p>Welcome!</p><p>What length of game do you want to play?</p><input type="radio" name="length" value='3'> Short </input><br/>
+    let content = play ? <Game /> : <div><p>Welcome!</p><p>What length of game do you want to play?</p><input type="radio" name="length" value='0' checked="checked"> All </input><br/>
+    <input type="radio" name="length" value='3'> Short </input><br/>
   <input type="radio" name='length' value="4"> Medium </input><br/>
   <input type="radio" name='length' value="5"> Long </input><br/><br/><button onClick={this.loginJudge}> Judge Login </button><button onClick={this.setUpGame}> Play! </button></div>;
     return (
