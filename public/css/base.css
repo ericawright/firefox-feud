@@ -1,21 +1,29 @@
 * {
   font-family: "Helvetica Neue", sans-serif;
   font-stretch: condensed;
-  font-weight: 400;
+  font-weight: bold;
 }
 
 body { background-color: #7EB4EA; font-size: 200%; }
-#content { background-color: #FDE977; border: 4px solid #6E4411; margin: 0 auto; }
+button, input {font-size: 100%;}
+#content { background-color: #FDE977; border: 4px groove #6E4411; margin: 0 auto; }
+#intro, #judgeLogin { margin: 2em; }
+.next, .play { float: right; }
 
 header, section {
 }
 
-header h1 {	text-transform: lowercase; background-color: black; color: #FDE977; border-bottom: 4px solid #6E4411; margin: 0; font-size: inherit; padding: 0.2em; text-align: center;}
+header h1 {	text-transform: lowercase; background-color: black; color: #FDE977; border-bottom: 4px groove #6E4411; margin: 0; font-size: inherit; padding: 0.2em; text-align: center; line-height: 100%; }
 header h1::after { content: "."; }
 header h1:first-letter { text-transform: uppercase; }
 
 section.answers {
   padding: 0;
+  /*-moz-columns: 2;
+  columns: 2;
+  -moz-column-gap: 0;
+  column-gap: 0;
+  height: 269px;*/
 }
 
 .front {
@@ -28,17 +36,25 @@ section.answers {
 
 div span.answer, div span.points {
   text-align: center;
-  margin: -2px;
-  padding: 0.2em;
+}
+
+div span.answer {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
 }
 
 
+
 div span.points {
-  border: 2px solid #FDE977;
+  border: 4px groove #FDE977;
   width: 2em;
   position: absolute;
-  right: 0;
-  top: 0;
+  right: -4px;
+  top: -4px;
+  padding: 0.2em;
+  background-color: #6E4411;
 }
 
 section.strikes {
@@ -48,13 +64,21 @@ section.strikes {
 section.strikes div {
   position: fixed;
   font-size: 10em;
-  top: 15%;
+  top: 0;
   display:none;
 }
 
 .flip-container {
   height: 54px;
   z-index: 1;
+}
+
+.flip-container.blank {
+	border: 4px groove #A6AAA9;
+	background-image: url(null.png);
+	background-repeat: space;
+	background-size: 77px;
+	background-position-y: center;
 }
 
 .flip-container.reveal.clicked .face.back {
@@ -84,13 +108,13 @@ section.strikes div {
   text-align: center;
   text-transform: uppercase;
   background-color: #000;
-  border: 2px solid #A6AAA9;
+  border: 4px groove #A6AAA9;
   padding: 0.2em;
 }
 
 .face.back {
   transform: rotateY(180deg) rotateZ(180deg);
-  padding: 0.2em 3em 0.2em 0;
+  padding: 0.2em 2.75em 0.2em 0.2em;
 }
 .face.front {
   background-color: #B7C9DF;
@@ -102,6 +126,7 @@ section.strikes div {
   background-color: #FEC079;
   border-left: 16px solid #FEC079;
   border-right: 16px solid #FEC079;
+  color: #fff;
 }
 
 
