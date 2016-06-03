@@ -24,7 +24,7 @@ let StartPage = React.createClass({
     let content = play ? <Game /> : <div><p>Welcome!</p><p>What length of game do you want to play?</p><input type="radio" name="length" value='0' checked="checked"> All </input><br/>
     <input type="radio" name="length" value='3'> Short </input><br/>
   <input type="radio" name='length' value="4"> Medium </input><br/>
-  <input type="radio" name='length' value="5"> Long </input><br/><br/><button onClick={this.loginJudge}> Judge Login </button><button onClick={this.setUpGame}> Play! </button></div>;
+  <input type="radio" name='length' value="5"> Long </input><br/><br/><button onClick={this.loginJudge}> Judge Login </button><button className="play" onClick={this.setUpGame}> Play! </button></div>;
     return (
       <div>
         {content}
@@ -111,7 +111,7 @@ let Game = React.createClass({
             {this.props.judge &&
               <div>
                 <button onClick={this.triggerStrike}> Wrong! </button>
-                <button onClick={this.nextQuestion}> Next Question </button>
+                <button className="next" onClick={this.nextQuestion}> Next Question </button>
                 <div>{next_question[0].replace(/([A-Z])/g, ' $1').replace(/^./, function (str) { return str.toUpperCase(); })}</div>
               </div>
             }

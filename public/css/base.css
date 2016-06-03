@@ -8,7 +8,7 @@ body { background-color: #7EB4EA; font-size: 200%; }
 button, input {font-size: 100%;}
 #content { background-color: #FDE977; border: 4px groove #6E4411; margin: 0 auto; }
 #intro, #judgeLogin { margin: 2em; }
-.next, .play { float: right; }
+button.next, button.play { float: right; }
 
 header, section {
 }
@@ -68,6 +68,10 @@ section.strikes div {
   font-size: 10em;
   top: 0;
   display:none;
+  letter-spacing: -0.15em;
+  width: 75%;
+	left: 50%;
+	margin-left: -37.5%;
 }
 
 .flip-container {
