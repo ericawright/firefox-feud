@@ -13,7 +13,15 @@ button, input {font-size: 100%;}
 header, section {
 }
 
-header h1 {	text-transform: lowercase; background-color: black; color: #FDE977; border-bottom: 4px groove #6E4411; margin: 0; font-size: inherit; padding: 0.2em; text-align: center; line-height: 100%; }
+header h1 {
+  text-transform: lowercase;
+  background-color: black;
+  color: #FDE977;
+  border-bottom: 4px groove #6E4411;
+  margin: 0;
+  font-size: inherit;
+  text-align: center;
+ }
 header h1::after { content: "."; }
 header h1:first-letter { text-transform: uppercase; }
 
@@ -35,25 +43,19 @@ section.answers {
 }
 
 div span.answer, div span.points {
-  text-align: center;
-}
-
-div span.answer {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   display: block;
+  height: 100%;
 }
 
-
-
 div span.points {
-  border: 4px groove #FDE977;
+  border-left: 4px groove #FDE977;
   width: 2em;
   position: absolute;
-  right: -4px;
-  top: -4px;
-  padding: 0.2em;
+  right: 0;
+  top: 0;
   background-color: #6E4411;
 }
 
@@ -69,7 +71,7 @@ section.strikes div {
 }
 
 .flip-container {
-  height: 54px;
+  height: 1.5em;
   z-index: 1;
 }
 
@@ -101,6 +103,7 @@ section.strikes div {
   display: block;
   transition: all 0.2s linear;
   position: absolute;
+  height: 100%;
   width: 100%;
   backface-visibility: hidden;
   box-sizing: border-box;
@@ -109,12 +112,11 @@ section.strikes div {
   text-transform: uppercase;
   background-color: #000;
   border: 4px groove #A6AAA9;
-  padding: 0.2em;
 }
 
 .face.back {
   transform: rotateY(180deg) rotateZ(180deg);
-  padding: 0.2em 2.75em 0.2em 0.2em;
+  padding: 0 2.75em 0 0.2em;
 }
 .face.front {
   background-color: #B7C9DF;
