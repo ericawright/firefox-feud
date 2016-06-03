@@ -5,7 +5,7 @@ let StartPage = React.createClass({
     $('#submitJudgeLogin').on('click', function(){
       if ($('#judgeName').val() == 'judge' && $('#judgePass').val() == 'P4ssword') {
         becomeJudge();
-        alert("success!");
+        alert("Judge authenticated; play when ready");
       }
       $('#judgeLogin').hide();
     });
