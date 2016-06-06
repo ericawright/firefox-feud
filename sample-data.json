@@ -1,199 +1,203 @@
 {
-  "sampleQuestionHere": {
+  "Name a board that kids ride for fun": {
     "counter": 1,
     "answers": [
       [
-        "my answer",
-        37
+        "Skateboard",
+        76
       ],
       [
-        "your answer",
-        22
+        "Surfboard",
+        15
       ],
       [
-        "This one's wrong",
+        "Snowboard",
         6
       ],
       [
-        "totally off base",
+        "Boogie board",
         5
-      ],
-      [
-        "what were they even thinking",
-        2
-      ],
-      [
-        "i agree",
-        2
-      ],
-      [
-        "¯\\_(ツ)_/¯",
-        1
       ]
     ]
   },
-  "sampleQuestionNumberFour": {
+  "Name a state with awful weather": {
     "counter": 1,
     "answers": [
       [
-        "my answer",
-        37
+        "Alaska",
+        30
       ],
       [
-        "your answer",
-        22
+        "New York",
+        21
       ],
       [
-        "This one's wrong",
+        "Minnesota",
+        10
+      ],
+      [
+        "Maine",
+        9
+      ],
+      [
+        "Michigan",
         6
       ],
       [
-        "totally off base",
-        5
-      ],
-      [
-        "what were they even thinking",
+        "N. Dakota",
         2
       ],
       [
-        "i agree",
+        "Illinois",
+        3
+      ],
+      [
+        "Montana",
+        3
+      ],
+      [
+        "Ohio",
         2
       ],
       [
-        "¯\\_(ツ)_/¯",
-        1
+        "Washington",
+        2
       ]
     ]
   },
-  "sampleQuestionNumberThree": {
-    "counter": 0,
+  "Name something people run out of": {
+    "counter": 1,
     "answers": [
       [
-        "my answer",
-        37
+        "Milk",
+        26
       ],
       [
-        "your answer",
+        "Money",
         22
       ],
       [
-        "This one's wrong",
-        6
+        "Gas",
+        16
       ],
       [
-        "totally off base",
-        5
+        "Sugar",
+        11
       ],
       [
-        "what were they even thinking",
-        2
+        "Toilet Paper",
+        10
       ],
       [
-        "i agree",
-        2
+        "Energy",
+        3
       ],
       [
-        "¯\\_(ツ)_/¯",
-        1
+        "Patience",
+        3
       ]
     ]
   },
-  "sampleQuestionNumberTwo": {
-    "counter": 0,
+  "Tell us something a mother says to her child over and over again": {
+    "counter": 1,
     "answers": [
       [
-        "my answer",
-        37
+        "No",
+        30
       ],
       [
-        "your answer",
-        22
+        "Don't",
+        15
       ],
       [
-        "This one's wrong",
-        6
+        "I Love You",
+        10
       ],
       [
-        "totally off base",
-        5
+        "Be Quiet",
+        8
       ],
       [
-        "what were they even thinking",
+        "Clean Your Room",
+        7
+      ],
+      [
+        "Don't Touch",
+        7
+      ],
+      [
+        "Brush Teeth",
+        3
+      ],
+      [
+        "Wash Hands",
         2
-      ],
-      [
-        "i agree",
-        2
-      ],
-      [
-        "¯\\_(ツ)_/¯",
-        1
       ]
     ]
   },
-  "sampleQuestionNumberFive": {
-    "counter": 0,
+  "Name something in the house that is very difficult to move": {
+    "counter": 1,
     "answers": [
       [
-        "my answer",
-        37
+        "Refrigerator",
+        42
       ],
       [
-        "your answer",
-        22
+        "Piano",
+        14
       ],
       [
-        "This one's wrong",
-        6
+        "Couch",
+        12
       ],
       [
-        "totally off base",
+        "Bed",
+        9
+      ],
+      [
+        "Dresser",
         5
       ],
       [
-        "what were they even thinking",
-        2
+        "TV",
+        5
       ],
       [
-        "i agree",
-        2
-      ],
-      [
-        "¯\\_(ツ)_/¯",
-        1
+        "Stove",
+        3
       ]
     ]
   },
-  "sampleQuestionNumberTheLast": {
-    "counter": 0,
+  "Name something that easy to do forwards, but hard backwards": {
+    "counter": 1,
     "answers": [
       [
-        "my answer",
-        37
+        "Walk",
+        24
       ],
       [
-        "your answer",
-        22
+        "Run",
+        19
       ],
       [
-        "This one's wrong",
-        6
+        "Drive",
+        14
       ],
       [
-        "totally off base",
-        5
+        "Write",
+        11
       ],
       [
-        "what were they even thinking",
-        2
+        "Skate",
+        10
       ],
       [
-        "i agree",
-        2
+        "Ride Bicycle",
+        9
       ],
       [
-        "¯\\_(ツ)_/¯",
-        1
+        "Talk",
+        4
       ]
     ]
   }

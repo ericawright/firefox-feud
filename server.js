@@ -81,12 +81,14 @@ io.on('connection', function (socket) {
     socket.broadcast.emit('trigger correct');
   });
 
+  socket.on('toggle logo flip', function () {
+    socket.broadcast.emit('toggle logo flip');
+  });
+
   socket.on('disconnect', function () {
     console.log('user disconnected');
   });
 
 });
 
-http.listen(3000, '0.0.0.0', function () {
-  console.log('listening on *:3000');
-});
+http.listen(process.env.PORT || 3000)

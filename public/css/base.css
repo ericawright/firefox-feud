@@ -2,15 +2,42 @@
   font-family: "Helvetica Neue", sans-serif;
   font-stretch: condensed;
   font-weight: bold;
+  box-sizing: border-box;
 }
 
-body { background-color: #7EB4EA; font-size: 200%; }
-button, input {font-size: 100%;}
-#content { background-color: #FDE977; border: 4px groove #6E4411; margin: 0 auto; }
-#intro, #judgeLogin { margin: 2em; }
-button.next, button.play { float: right; }
+body {
+  background-color: #7EB4EA;
+  font-size: 200%;
+}
 
-header, section {
+button,
+input {
+  font-size: 100%;
+}
+
+#content {
+  background-color: #FDE977;
+  border: 4px groove #6E4411;
+  margin: 0 auto;
+  min-height: 300px;
+  position:relative;
+}
+
+.logo:not(.front-card) {
+  width: 52%;
+  height: 100%;
+  display: block;
+  margin: 0px auto;
+}
+
+#intro,
+#judgeLogin {
+  margin: 2em;
+}
+
+button.next,
+button.play {
+  float: right;
 }
 
 header h1 {
@@ -21,17 +48,33 @@ header h1 {
   margin: 0;
   font-size: inherit;
   text-align: center;
- }
-header h1::after { content: "."; }
-header h1:first-letter { text-transform: uppercase; }
+}
+
+header h1::after {
+  content: ".";
+}
+
+header h1:first-letter {
+  text-transform: uppercase;
+}
 
 section.answers {
   padding: 0;
-  /*-moz-columns: 2;
-  columns: 2;
-  -moz-column-gap: 0;
-  column-gap: 0;
-  height: 269px;*/
+}
+
+.first_half,
+.second_half {
+  width: 100%;
+  display: block;
+}
+
+@media (min-device-width: 800px), (min-width: 800px) {
+    /* For desktop: */
+    .first_half,
+    .second_half {
+      width: 50%;
+        display: inline-block;
+    }
 }
 
 .front {
@@ -39,7 +82,6 @@ section.answers {
   background-color: #000;
   text-transform: uppercase;
   text-align: center;
-
 }
 
 div span.answer, div span.points {
@@ -82,6 +124,7 @@ section.strikes div {
 .flip-container.blank {
 	border: 4px groove #FDE977;
 	background-image: url(null.png);
+  background-repeat: repeat-x;
 	background-repeat: space;
 	background-size: 77px;
 	background-position-y: center;
@@ -136,7 +179,48 @@ section.strikes div {
   color: #fff;
 }
 
-
 #judgeLogin {
   display: none;
+}
+
+.secretLogin {
+  position: absolute;
+  top:0;
+  left:0;
+  height: 50px;
+  width: 50px;
+}
+
+.container{
+  left: 0;
+  right: 0;
+  perspective: 800px;
+}
+
+#card {
+  transform-style: preserve-3d;
+  transition: transform 1s;
+  position:relative;
+}
+
+#card > *{
+  display: block;
+  backface-visibility: hidden;
+}
+
+#card .front-card {
+  position:absolute;
+  height: 100%;
+  margin: 0px auto;
+  left: 0;
+  right: 0;
+}
+
+#card .back-card {
+  position:relative;
+  transform: rotateY( 180deg );
+}
+
+#card.flipped {
+  transform: rotateY( 180deg );
 }

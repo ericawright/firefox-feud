@@ -12,8 +12,7 @@ This app has been populated with a few sample questions located in `sample-data.
 
 2. Go to localhost:3000
 
-3. Click "Judge Login"  
-  - username is 'judge'
+3. Click on a hidden div in the top left
   - password is 'P4ssword'
 
   (login is not meant to protect anything, just meant to stop people from accidentally becoming a judge)

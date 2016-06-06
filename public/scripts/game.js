@@ -1,19 +1,23 @@
 let StartPage = React.createClass({
   loginJudge: function () {
     let becomeJudge = this.props.becomeJudge;
+    let setUpGame = this.setUpGame
     $('#judgeLogin').show();
-    $('#submitJudgeLogin').on('click', function(){
-      if ($('#judgeName').val() == 'judge' && $('#judgePass').val() == 'P4ssword') {
+    $('.logo').hide();
+    $('.play').on('click', function(){
+      if ($('#judgePass').val() == 'P4ssword') {
+        $('#judgeLogin').hide();
         becomeJudge();
-        alert("Judge authenticated; play when ready");
+        setUpGame();
       }
-      $('#judgeLogin').hide();
     });
   },
   setUpGame: function () {
-    $('#judgeLogin').hide();
     let game_length = $('input[name=length]:checked').val();
-    this.props.startPlay(game_length);
+    let startPlay = this.props.startPlay;
+    setTimeout(function () {
+      startPlay(game_length);
+    }, 600);
   },
   render: function () {
     let self = this;
@@ -21,19 +25,23 @@ let StartPage = React.createClass({
       self.props.updateState(Object.assign({}, data, {judge: self.props.judge}));
     });
     let play = this.props.beginGame;
-    let content = play ? <Game /> : <div><p>Welcome!</p><p>What length of game do you want to play?</p><input type="radio" name="length" value='0' checked="checked"> All </input><br/>
-    <input type="radio" name="length" value='3'> Short </input><br/>
-  <input type="radio" name='length' value="4"> Medium </input><br/>
-  <input type="radio" name='length' value="5"> Long </input><br/><br/><button onClick={this.loginJudge}> Judge Login </button><button className="play" onClick={this.setUpGame}> Play! </button></div>;
+    let content = play ? <Game /> : <div>
+          <div className="secretLogin" onClick={this.loginJudge}></div>
+          <img className="logo" src="../css/feud.gif"/>
+          <div id="judgeLogin">
+            <legend>Game length</legend>
+            <input type="radio" name="length" value='0' defaultChecked="checked"> All questions</input><br/>
+            <input type="radio" name='length' value="5"> 6 questions </input><br/>
+            <input type="radio" name='length' value="4"> 5 questions </input><br/>
+            <input type="radio" name="length" value='3'> 4 questions </input><br/><br/>
+            <h2>Login</h2>
+            <input id="judgePass" name="password" type="password"/>
+            <button className="play" onClick={this.loginJudge}> Play! </button>
+          </div>
+        </div>;
     return (
       <div>
         {content}
-        <div id="judgeLogin">
-          <h2>Login</h2>
-          <input id="judgeName" name="user_name" placeholder="User Name" type="text"/>
-          <input id="judgePass" name="password" type="password"/>
-          <button id="submitJudgeLogin"> Submit </button>
-        </div>
       </div>
     )
   }
@@ -85,6 +93,12 @@ let Game = React.createClass({
   triggerStrike: function () {
     this.props.incrementStrikeCount(this.props.strikeCount + 1);
   },
+  triggerSingleStrike: function () {
+    socket.emit('trigger strike', 1);
+  },
+  toggleLogoFlip: function () {
+    socket.emit('toggle logo flip');
+  },
   nextQuestion: function () {
     if (this.props.gameLength != 0 && (this.props.currentQuestion) == this.props.gameLength) {
       this.props.endGame();
@@ -93,30 +107,50 @@ let Game = React.createClass({
     }
   },
   render: function () {
-    var next_question = this.props.keysNew[this.props.currentQuestion + 1] || this.props.keysOld[0]
+    if (this.props.keysNew.length){
+      var self = this;
+      var next_question = this.props.keysNew[this.props.currentQuestion + 1] || this.props.keysOld[0];
+      var next_question_count = this.props.data[next_question[0]].answers.length;
+      var point_amount = this.props.data[next_question[0]].answers.map( function(elt){ return parseInt(elt[1]); }).reduce( function(a,b){ return a+b });
+    }
+    var flipped_class = this.props.judge ? ' flipped' : '';
     return(
       <div>
-        {this.props.keysNew.length &&
+      {this.props.keysNew.length && this.props.judge &&
+        <div>
+          <header><h1>{this.props.keysNew[this.props.currentQuestion][0]}</h1></header>
+
+          <AnswerSection />
           <div>
-            <header><h1>{this.props.keysNew[this.props.currentQuestion][0].replace(/([A-Z])/g, ' $1').replace(/^./, function (str) { return str.toUpperCase(); })}</h1></header>
-
-            <AnswerSection />
-
-            <section className="strikes">
-            	<div className="one-strike">☒</div>
-            	<div className="two-strikes">☒☒</div>
-            	<div className="three-strikes">☒☒☒</div>
-            </section>
-
-            {this.props.judge &&
-              <div>
-                <button onClick={this.triggerStrike}> Wrong! </button>
-                <button className="next" onClick={this.nextQuestion}> Next Question </button>
-                <div>{next_question[0].replace(/([A-Z])/g, ' $1').replace(/^./, function (str) { return str.toUpperCase(); })}</div>
-              </div>
-            }
+            <button onClick={this.triggerStrike}> Wrong Counter! </button>
+            <button onClick={this.triggerSingleStrike}> Wrong Single! </button>
+            <button onClick={this.toggleLogoFlip}> Toggle Logo </button>
+            <button className="next" onClick={this.nextQuestion}> Next Question </button>
+            <div>{next_question[0] + ', top ' + next_question_count + ' answers, ' + point_amount + ' people surveyed.'}</div>
           </div>
-        }
+        </div>
+      ||
+        <section className="container">
+          <div id="card">
+            <img className="logo front-card" src="../css/feud.gif"/>
+            <div className="back-card">
+            {this.props.keysNew.length &&
+              <div>
+                <header><h1>{this.props.keysNew[this.props.currentQuestion][0]}</h1></header>
+
+                <AnswerSection />
+
+                <section className="strikes">
+                  <div className="one-strike">☒</div>
+                  <div className="two-strikes">☒☒</div>
+                  <div className="three-strikes">☒☒☒</div>
+                </section>
+              </div>
+          }
+          </div>
+          </div>
+        </section>
+      }
       </div>
     );
   }
@@ -239,7 +273,7 @@ let reducer = function (state, action) {
       let nextQuestion = state.currentQuestion + 1;
       newState = Object.assign({}, state, {strikeCount: 0, currentQuestion: nextQuestion});
       if (!newState.keysNew[nextQuestion]) {
-        nextQuestion = 0;
+        newState.currentQuestion = 0;
         newState.keysNew = newState.keysOld;
       }
       socket.emit('update game', newState);
@@ -309,7 +343,6 @@ let GameDispatch = function (dispatch) {
         callback();
       }
       window.addEventListener('transitionend', advanceQuestionCallback);
-
       dispatch({
         type: 'hide_answers'
       });
