@@ -41,21 +41,12 @@ button.play {
 }
 
 header h1 {
-  text-transform: lowercase;
   background-color: black;
   color: #FDE977;
   border-bottom: 4px groove #6E4411;
   margin: 0;
   font-size: inherit;
   text-align: center;
-}
-
-header h1::after {
-  content: ".";
-}
-
-header h1:first-letter {
-  text-transform: uppercase;
 }
 
 section.answers {
