@@ -106,6 +106,12 @@ let Game = React.createClass({
       this.props.hideAnswers(this.props.advanceQuestion);
     }
   },
+  toggleTeam: function () {
+    this.props.dispatchToggleTeam();
+  },
+  addScore: function () {
+    this.props.dispatchAddScore(this.props.currentQuestionScore);
+  },
   render: function () {
     if (this.props.keysNew.length){
       var self = this;
@@ -116,41 +122,45 @@ let Game = React.createClass({
     var flipped_class = this.props.judge ? ' flipped' : '';
     return(
       <div>
-      {this.props.keysNew.length && this.props.judge &&
-        <div>
-          <header><h1>{this.props.keysNew[this.props.currentQuestion][0]}</h1></header>
-
-          <AnswerSection />
+        {this.props.keysNew.length && this.props.judge &&
           <div>
-            <button onClick={this.triggerStrike}> Wrong Counter! </button>
-            <button onClick={this.triggerSingleStrike}> Wrong Single! </button>
-            <button onClick={this.toggleLogoFlip}> Toggle Logo </button>
-            <button className="next" onClick={this.nextQuestion}> Next Question </button>
-            <div>{next_question[0] + ', top ' + next_question_count + ' answers, ' + point_amount + ' people surveyed.'}</div>
+            <header><h1>{this.props.keysNew[this.props.currentQuestion][0]}</h1></header>
+
+            <AnswerSection />
+            <div>
+              <button onClick={this.toggleLogoFlip}> Toggle Logo </button>
+              <button onClick={this.triggerSingleStrike}> Wrong Single! </button>
+              <button onClick={this.triggerStrike}> Wrong Counter! </button>
+              <br/>
+              <button onClick={this.toggleTeam}>{(this.props.team === "a" && "A") || "B"}</button>
+              <button onClick={this.addScore}>{"Score"}</button>
+              <button className="next" onClick={this.nextQuestion}> Next Question </button>
+              <p> Team A: {this.props.aTeamScore}, Team B: {this.props.bTeamScore}</p>
+              <div>{next_question[0] + ', top ' + next_question_count + ' answers, ' + point_amount + ' people surveyed.'}</div>
+            </div>
           </div>
-        </div>
-      ||
-        <section className="container">
-          <div id="card">
-            <img className="logo front-card" src="../css/feud.gif"/>
-            <div className="back-card">
-            {this.props.keysNew.length &&
-              <div>
-                <header><h1>{this.props.keysNew[this.props.currentQuestion][0]}</h1></header>
+        ||
+          <section className="container">
+            <div id="card">
+              <img className="logo front-card" src="../css/feud.gif"/>
+              <div className="back-card">
+                {this.props.keysNew.length &&
+                  <div>
+                    <header><h1>{this.props.keysNew[this.props.currentQuestion][0]}</h1></header>
 
-                <AnswerSection />
+                    <AnswerSection />
 
-                <section className="strikes">
-                  <div className="one-strike">☒</div>
-                  <div className="two-strikes">☒☒</div>
-                  <div className="three-strikes">☒☒☒</div>
-                </section>
+                    <section className="strikes">
+                      <div className="one-strike">☒</div>
+                      <div className="two-strikes">☒☒</div>
+                      <div className="three-strikes">☒☒☒</div>
+                    </section>
+                  </div>
+                }
               </div>
-          }
-          </div>
-          </div>
-        </section>
-      }
+            </div>
+          </section>
+        }
       </div>
     );
   }
@@ -162,7 +172,7 @@ let AnswerContainer = React.createClass({
       if (this.props.revealedAnswers.length === 0 ) {
         this.writeToJSON();
       }
-      this.props.addRevealedAnswer(this.props.index);
+      this.props.addRevealedAnswer(this.props.index, this.props.count);
     }
   },
   writeToJSON: function () {
@@ -212,7 +222,7 @@ let AnswerSection = React.createClass({
     let containers = [];
     let blank_counter = 0;
 
-    if (this.props.keysNew.length != 0) {
+    if (this.props.keysNew.length !== 0) {
       $.each(this.props.data[this.props.keysNew[this.props.currentQuestion][0]].answers, function (i, value) {
         let answer = value[0];
         let count = value[1];
@@ -255,7 +265,11 @@ let initialState = {
   keysOld: [],
   data: {},
   url: '/api/feud-data',
-  revealedAnswers: []
+  revealedAnswers: [],
+  team: 'a',
+  aTeamScore: 0,
+  bTeamScore: 0,
+  currentQuestionScore: 0
 }
 
 let reducer = function (state, action) {
@@ -271,7 +285,7 @@ let reducer = function (state, action) {
       break;
     case 'advance_question':
       let nextQuestion = state.currentQuestion + 1;
-      newState = Object.assign({}, state, {strikeCount: 0, currentQuestion: nextQuestion});
+      newState = Object.assign({}, state, {strikeCount: 0, currentQuestion: nextQuestion, currentQuestionScore: 0});
       if (!newState.keysNew[nextQuestion]) {
         newState.currentQuestion = 0;
         newState.keysNew = newState.keysOld;
@@ -299,8 +313,23 @@ let reducer = function (state, action) {
       newState = Object.assign({}, state, {strikeCount: action.strikeCount});
       socket.emit('trigger strike', action.strikeCount);
       break;
+    case 'toggle_team':
+      let newTeam = state.team === 'a' ? 'b' : 'a';
+      newState = Object.assign({}, state, {team: newTeam});
+      break;
+    case 'add_score':
+        var aTeamScore = state.aTeamScore;
+        var bTeamScore = state.bTeamScore;
+        if (state.team === 'a') {
+          aTeamScore = state.aTeamScore += action.total;
+        } else {
+          bTeamScore = state.bTeamScore += action.total;
+        }
+        newState = Object.assign({}, state, {bTeamScore: bTeamScore, aTeamScore : aTeamScore});
+      break;
     case 'reveal_answer':
-      newState = Object.assign({}, state, {});
+      let currentQuestionScore = state.currentQuestionScore + action.count;
+      newState = Object.assign({}, state, {currentQuestionScore: currentQuestionScore});
       newState.revealedAnswers = [...state.revealedAnswers, action.answer];
       socket.emit('trigger correct');
       socket.emit('update game', newState);
@@ -323,7 +352,11 @@ let GameState = function (state) {
     currentQuestion: state.currentQuestion,
     url: state.url,
     data: state.data,
-    revealedAnswers: state.revealedAnswers
+    revealedAnswers: state.revealedAnswers,
+    team: state.team,
+    aTeamScore: state.aTeamScore,
+    bTeamScore: state.bTeamScore,
+    currentQuestionScore: state.currentQuestionScore
   }
 }
 
@@ -375,10 +408,22 @@ let GameDispatch = function (dispatch) {
         strikeCount: count
       });
     },
-    addRevealedAnswer: function (answer) {
+    dispatchToggleTeam: function () {
+      dispatch({
+        type: 'toggle_team'
+      });
+    },
+    dispatchAddScore: function (total) {
+      dispatch({
+        type: 'add_score',
+        total: total
+      });
+    },
+    addRevealedAnswer: function (answer, count) {
       dispatch({
         type: 'reveal_answer',
-        answer: answer
+        answer: answer,
+        count: count
       });
     },
     endGame: function() {

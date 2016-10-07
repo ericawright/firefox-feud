@@ -21,7 +21,7 @@
     ]
   },
   "Name a state with awful weather": {
-    "counter": 1,
+    "counter": 3,
     "answers": [
       [
         "Alaska",
@@ -66,7 +66,7 @@
     ]
   },
   "Name something people run out of": {
-    "counter": 1,
+    "counter": 2,
     "answers": [
       [
         "Milk",
@@ -99,7 +99,7 @@
     ]
   },
   "Tell us something a mother says to her child over and over again": {
-    "counter": 1,
+    "counter": 3,
     "answers": [
       [
         "No",
@@ -136,7 +136,7 @@
     ]
   },
   "Name something in the house that is very difficult to move": {
-    "counter": 1,
+    "counter": 7,
     "answers": [
       [
         "Refrigerator",
@@ -169,7 +169,7 @@
     ]
   },
   "Name something that easy to do forwards, but hard backwards": {
-    "counter": 1,
+    "counter": 3,
     "answers": [
       [
         "Walk",
