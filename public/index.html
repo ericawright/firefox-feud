@@ -48,6 +48,11 @@
 
       socket.on('toggle logo flip', function () {
         $('#card').toggleClass('flipped');
+        if ($('#card').hasClass('flipped')){
+          $('#scores').hide();
+        } else {
+          $('#scores').show();
+        }
       });
 
     </script>

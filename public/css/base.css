@@ -15,12 +15,21 @@ input {
   font-size: 100%;
 }
 
+#scores{
+  margin: 0 auto;
+  width: 40%;
+  text-align: center;
+}
+
 #content {
-  background-color: #FDE977;
-  border: 4px groove #6E4411;
   margin: 0 auto;
   min-height: 300px;
   position:relative;
+}
+
+#content > div > div:first-child {
+  background-color: #FDE977;
+  border: 4px groove #6E4411;
 }
 
 .logo:not(.front-card) {

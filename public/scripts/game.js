@@ -43,9 +43,14 @@ let StartPage = React.createClass({
             <button className="play" onClick={this.loginJudge}> Play! </button>
           </div>
         </div>;
+      let scores = <div id="scores" hidden="hidden">
+          <p>{this.props.aTeamName}: {this.props.aTeamScore}</p>
+          <p> {this.props.bTeamName}: {this.props.bTeamScore}</p>
+        </div>
     return (
       <div>
         {content}
+        {scores}
       </div>
     )
   }
@@ -138,7 +143,7 @@ let Game = React.createClass({
               <button onClick={this.triggerSingleStrike}> Wrong Single! </button>
               <button onClick={this.triggerStrike}> Wrong Counter! </button>
               <br/>
-              <button onClick={this.toggleTeam}>{(this.props.team === "a" && this.props.aTeamName) || this.props.bTeamName}</button>
+              <button onClick={this.toggleTeam}>Active Team: {(this.props.team === "a" && this.props.aTeamName) || this.props.bTeamName}</button>
               <button onClick={this.addScore}>{"Score"}</button>
               <button className="next" onClick={this.nextQuestion}> Next Question </button>
               <p> {this.props.aTeamName}: {this.props.aTeamScore}, {this.props.bTeamName}: {this.props.bTeamScore}</p>
@@ -336,6 +341,7 @@ let reducer = function (state, action) {
           bTeamScore = state.bTeamScore += action.total;
         }
         newState = Object.assign({}, state, {bTeamScore: bTeamScore, aTeamScore : aTeamScore});
+        socket.emit('update game', newState);
       break;
     case 'reveal_answer':
       let currentQuestionScore = state.currentQuestionScore + action.count;
