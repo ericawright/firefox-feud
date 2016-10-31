@@ -46,8 +46,12 @@
         setTimeout(function() { $(strike_class).hide(); }, 1000);
       });
 
-      socket.on('toggle logo flip', function () {
-        $('#card').toggleClass('flipped');
+      socket.on('toggle logo flip', function (hideAnswers) {
+        if (hideAnswers === true) {
+          $('#card').removeClass('flipped');
+        } else {
+          $('#card').addClass('flipped');
+        }
         if ($('#card').hasClass('flipped')){
           $('#scores').hide();
         } else {

@@ -81,8 +81,8 @@ io.on('connection', function (socket) {
     socket.broadcast.emit('trigger correct');
   });
 
-  socket.on('toggle logo flip', function () {
-    socket.broadcast.emit('toggle logo flip');
+  socket.on('toggle logo flip', function (hideAnswers) {
+    socket.broadcast.emit('toggle logo flip', hideAnswers);
   });
 
   socket.on('disconnect', function () {

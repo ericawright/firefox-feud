@@ -105,10 +105,11 @@ let Game = React.createClass({
   triggerSingleStrike: function () {
     socket.emit('trigger strike', 1);
   },
-  toggleLogoFlip: function () {
-    socket.emit('toggle logo flip');
+  toggleLogoFlip: function (hideAnswers) {
+    socket.emit('toggle logo flip', hideAnswers);
   },
   nextQuestion: function () {
+    this.toggleLogoFlip(true);
     if (this.props.gameLength != 0 && (this.props.currentQuestion) == this.props.gameLength) {
       this.props.endGame();
     } else if (this.props.revealedAnswers.length){
@@ -136,10 +137,9 @@ let Game = React.createClass({
         {this.props.keysNew.length && this.props.judge &&
           <div>
             <header><h1>{this.props.keysNew[this.props.currentQuestion][0]}</h1></header>
-
             <AnswerSection />
             <div>
-              <button onClick={this.toggleLogoFlip}> Toggle Logo </button>
+              <button onClick={this.toggleLogoFlip.bind(this, false)}> Show Game </button>
               <button onClick={this.triggerSingleStrike}> Wrong Single! </button>
               <button onClick={this.triggerStrike}> Wrong Counter! </button>
               <br/>
