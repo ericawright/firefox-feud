@@ -14,9 +14,11 @@ let StartPage = React.createClass({
   },
   setUpGame: function () {
     let game_length = $('input[name=length]:checked').val();
+    let aTeamName = $('#aTeamInput').val();
+    let bTeamName = $('#bTeamInput').val();
     let startPlay = this.props.startPlay;
     setTimeout(function () {
-      startPlay(game_length);
+      startPlay(game_length, aTeamName, bTeamName);
     }, 600);
   },
   render: function () {
@@ -34,6 +36,8 @@ let StartPage = React.createClass({
             <input type="radio" name='length' value="5"> 6 questions </input><br/>
             <input type="radio" name='length' value="4"> 5 questions </input><br/>
             <input type="radio" name="length" value='3'> 4 questions </input><br/><br/>
+            <input type="text" placeholder= "Team A's Name" id="aTeamInput"></input>
+            <input type="text" placeholder= "Team B's Name" id="bTeamInput"></input>
             <h2>Login</h2>
             <input id="judgePass" name="password" type="password"/>
             <button className="play" onClick={this.loginJudge}> Play! </button>
@@ -134,10 +138,10 @@ let Game = React.createClass({
               <button onClick={this.triggerSingleStrike}> Wrong Single! </button>
               <button onClick={this.triggerStrike}> Wrong Counter! </button>
               <br/>
-              <button onClick={this.toggleTeam}>{(this.props.team === "a" && "A") || "B"}</button>
+              <button onClick={this.toggleTeam}>{(this.props.team === "a" && this.props.aTeamName) || this.props.bTeamName}</button>
               <button onClick={this.addScore}>{"Score"}</button>
               <button className="next" onClick={this.nextQuestion}> Next Question </button>
-              <p> Team A: {this.props.aTeamScore}, Team B: {this.props.bTeamScore}</p>
+              <p> {this.props.aTeamName}: {this.props.aTeamScore}, {this.props.bTeamName}: {this.props.bTeamScore}</p>
               <div>{next_question[0] + ', top ' + next_question_count + ' answers, ' + point_amount + ' people surveyed.'}</div>
             </div>
           </div>
@@ -271,7 +275,9 @@ let initialState = {
   team: 'a',
   aTeamScore: 0,
   bTeamScore: 0,
-  currentQuestionScore: 0
+  currentQuestionScore: 0,
+  aTeamName: "Team A",
+  bTeamName: "Team B"
 }
 
 let reducer = function (state, action) {
@@ -299,7 +305,9 @@ let reducer = function (state, action) {
       socket.emit('hide answers', newState);
       break;
     case 'start_play':
-      newState = Object.assign({}, state, {beginGame: true, gameLength: action.game_length});
+      let aTeamName = action.aTeamName || state.aTeamName;
+      let bTeamName = action.bTeamName || state.bTeamName;
+      newState = Object.assign({}, state, {beginGame: true, gameLength: action.game_length, aTeamName: aTeamName, bTeamName: bTeamName});
       break;
     case 'end_game' :
       newState = Object.assign({}, state, {beginGame: false, gameLength: 0, strikeCount: 0, revealedAnswers: []});
@@ -358,7 +366,9 @@ let GameState = function (state) {
     team: state.team,
     aTeamScore: state.aTeamScore,
     bTeamScore: state.bTeamScore,
-    currentQuestionScore: state.currentQuestionScore
+    currentQuestionScore: state.currentQuestionScore,
+    bTeamName: state.bTeamName,
+    aTeamName: state.aTeamName
   }
 }
 
@@ -387,10 +397,12 @@ let GameDispatch = function (dispatch) {
         type: 'advance_question'
       });
     },
-    startPlay: function (game_length) {
+    startPlay: function (game_length, aTeamName, bTeamName) {
       dispatch({
         type: 'start_play',
-        game_length: game_length
+        game_length: game_length,
+        aTeamName: aTeamName,
+        bTeamName: bTeamName
       });
     },
     becomeJudge: function () {
