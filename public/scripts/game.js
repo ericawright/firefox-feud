@@ -102,8 +102,10 @@ let Game = React.createClass({
   nextQuestion: function () {
     if (this.props.gameLength != 0 && (this.props.currentQuestion) == this.props.gameLength) {
       this.props.endGame();
-    } else {
+    } else if (this.props.revealedAnswers.length){
       this.props.hideAnswers(this.props.advanceQuestion);
+    } else {
+      this.props.advanceQuestion();
     }
   },
   toggleTeam: function () {
