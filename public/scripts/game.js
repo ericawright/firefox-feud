@@ -44,8 +44,7 @@ let StartPage = React.createClass({
           </div>
         </div>;
       let scores = <div id="scores" hidden="hidden">
-          <p>{this.props.aTeamName}: {this.props.aTeamScore}</p>
-          <p> {this.props.bTeamName}: {this.props.bTeamScore}</p>
+          <p>{this.props.aTeamName}: {this.props.aTeamScore}, {this.props.bTeamName}: {this.props.bTeamScore}</p>
         </div>
     return (
       <div>
@@ -147,7 +146,7 @@ let Game = React.createClass({
               <button onClick={this.addScore}>{"Score"}</button>
               <button className="next" onClick={this.nextQuestion}> Next Question </button>
               <p> {this.props.aTeamName}: {this.props.aTeamScore}, {this.props.bTeamName}: {this.props.bTeamScore}</p>
-              <div>{next_question[0] + ', top ' + next_question_count + ' answers, ' + point_amount + ' people surveyed.'}</div>
+              <div>{next_question[0] + ', top ' + next_question_count + ' answers, ' + point_amount + ' points available.'}</div>
             </div>
           </div>
         ||
